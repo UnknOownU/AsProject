@@ -1,0 +1,16 @@
+{# templates/annonce/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ annonce.title }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>{{ annonce.title }}</h1>
+        <p>{{ annonce.description }}</p>
+        <p>Kilométrage: {{ annonce.kilometrage }} km</p>
+        <p>Moteur: {{ annonce.engine }}</p>
+        <p>Prix: {{ annonce.price }} €</p>
+        <!-- Ajoute d'autres détails nécessaires -->
+        <a href="{{ path('annonces') }}" class="btn btn-primary">Retour aux annonces</a>
+    </div>
+{% endblock %}
