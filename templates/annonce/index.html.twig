@@ -4,15 +4,52 @@
 {% block title %}Annonces{% endblock %}
 
 {% block body %}
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
-        <h1>Nos Annonces</h1>
-        <ul>
-            {% for annonce in annonces %}
-                <li>
-                    <a href="{{ path('annonce_show', {id: annonce.id}) }}">{{ annonce.title }}</a>
-                    <p>{{ annonce.description }}</p>
-                </li>
-            {% endfor %}
-        </ul>
+        <a class="navbar-brand" href="{{ path('home') }}">AS<span style="color: gold;">GARAGE</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a href="{{ path('home') }}" class="nav-link">Accueil</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">À propos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Tarifs</a></li>
+                <li class="nav-item active"><a href="{{ path('annonces') }}" class="nav-link">Voitures</a></li>
+            </ul>
+        </div>
     </div>
+</nav>
+<!-- END nav -->
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-7 text-center">
+                <span class="subheading">Nos annonces</span>
+                <h2 class="mb-3">Voitures disponibles</h2>
+            </div>
+        </div>
+        <div class="row">
+            {% for annonce in annonces %}
+                <div class="col-md-4">
+                    <div class="car-wrap rounded">
+                        <div class="img rounded" style="background-image: url('{{ annonce.image ? asset(annonce.image) : asset('images/default_car_image.jpg') }}');">
+                        </div>
+                        <div class="text">
+                            <h2 class="mb-0"><a href="#">{{ annonce.title }}</a></h2>
+                            <div class="d-flex mb-3">
+                                <span class="cat">{{ annonce.brand }}</span>
+                                <p class="price ml-auto">{{ annonce.price }} € <span>/ jour</span></p>
+                            </div>
+                            <p class="d-flex mb-0 d-block"><a href="#" class="btn btn-primary">Réserver maintenant</a> <a href="#" class="btn btn-secondary">Détails</a></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 {% endblock %}

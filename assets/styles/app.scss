@@ -1,0 +1,18 @@
+// Import Bootstrap SCSS
+@import "~bootstrap/scss/bootstrap";
+
+// Custom SCSS code
+.car-wrap {
+    border-radius: 30px; // Augmentez le rayon des bordures pour les rendre plus arrondies
+    overflow: hidden; // Assurez-vous que l'image à l'intérieur de la carte est également arrondie
+
+    .img {
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+    }
+
+    .text {
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+    }
+}
