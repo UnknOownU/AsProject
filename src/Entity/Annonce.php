@@ -1,216 +1,92 @@
 <?php
 
-// src/Entity/Annonce.php
-
 namespace App\Entity;
 
+use App\Repository\AnnonceRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\AnnonceRepository")
- */
+#[ORM\Entity(repositoryClass: AnnonceRepository::class)]
 class Annonce
 {
-    /**
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue
-     *
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $title;
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
 
-    /**
-     * @ORM\Column(type="text")
-     *
-     * @Assert\NotBlank
-     */
-    private $description;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $carName;
+    #[ORM\Column(length: 255)]
+    private ?string $carname = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $kilometrage;
+    #[ORM\Column]
+    private ?int $kilometrage = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $engine;
+    #[ORM\Column(length: 255)]
+    private ?string $engine = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $gearbox;
+    #[ORM\Column(length: 255)]
+    private ?string $gearbox = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $fuel;
+    #[ORM\Column(length: 255)]
+    private ?string $fuel = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $provenance;
+    #[ORM\Column(length: 255)]
+    private ?string $provenance = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $year;
+    #[ORM\Column(length: 255)]
+    private ?string $year = null;
 
-    /**
-     * @ORM\Column(type="date")
-     *
-     * @Assert\NotBlank
-     */
-    private $registrationDate;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $registrationDate = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $technicalControl;
+    #[ORM\Column(length: 255)]
+    private ?string $technicalControl = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     *
-     * @Assert\NotBlank
-     */
-    private $firstHand;
+    #[ORM\Column]
+    private ?bool $firstHand = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $color;
+    #[ORM\Column(length: 255)]
+    private ?string $color = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $doors;
+    #[ORM\Column(length: 255)]
+    private ?string $doors = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $seats;
+    #[ORM\Column]
+    private ?int $seats = null;
 
-    /**
-     * @ORM\Column(type="decimal", scale=2)
-     *
-     * @Assert\NotBlank
-     */
-    private $length;
+    #[ORM\Column]
+    private ?int $fiscalPower = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $trunkVolume;
+    #[ORM\Column]
+    private ?int $horsePower = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $fiscalPower;
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    private $image = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $horsePower;
+    #[ORM\Column(length: 255)]
+    private ?string $brand = null;
 
-    /**
-     * @ORM\Column(type="decimal", scale=2)
-     *
-     * @Assert\NotBlank
-     */
-    private $fuelConsumption;
+    #[ORM\Column]
+    private ?float $price = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $co2Emission;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $euroNorm;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank
-     */
-    private $critAir;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
-
-    // Getters et Setters
+    #[ORM\Column]
+    private ?float $fuelConsumption = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getTitle(): ?string
@@ -218,7 +94,7 @@ class Annonce
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
@@ -230,21 +106,21 @@ class Annonce
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getCarName(): ?string
+    public function getCarname(): ?string
     {
-        return $this->carName;
+        return $this->carname;
     }
 
-    public function setCarName(string $carName): self
+    public function setCarname(string $carname): static
     {
-        $this->carName = $carName;
+        $this->carname = $carname;
 
         return $this;
     }
@@ -254,7 +130,7 @@ class Annonce
         return $this->kilometrage;
     }
 
-    public function setKilometrage(int $kilometrage): self
+    public function setKilometrage(int $kilometrage): static
     {
         $this->kilometrage = $kilometrage;
 
@@ -266,7 +142,7 @@ class Annonce
         return $this->engine;
     }
 
-    public function setEngine(string $engine): self
+    public function setEngine(string $engine): static
     {
         $this->engine = $engine;
 
@@ -278,7 +154,7 @@ class Annonce
         return $this->gearbox;
     }
 
-    public function setGearbox(string $gearbox): self
+    public function setGearbox(string $gearbox): static
     {
         $this->gearbox = $gearbox;
 
@@ -290,7 +166,7 @@ class Annonce
         return $this->fuel;
     }
 
-    public function setFuel(string $fuel): self
+    public function setFuel(string $fuel): static
     {
         $this->fuel = $fuel;
 
@@ -302,19 +178,19 @@ class Annonce
         return $this->provenance;
     }
 
-    public function setProvenance(string $provenance): self
+    public function setProvenance(string $provenance): static
     {
         $this->provenance = $provenance;
 
         return $this;
     }
 
-    public function getYear(): ?int
+    public function getYear(): ?string
     {
         return $this->year;
     }
 
-    public function setYear(int $year): self
+    public function setYear(string $year): static
     {
         $this->year = $year;
 
@@ -326,7 +202,7 @@ class Annonce
         return $this->registrationDate;
     }
 
-    public function setRegistrationDate(\DateTimeInterface $registrationDate): self
+    public function setRegistrationDate(\DateTimeInterface $registrationDate): static
     {
         $this->registrationDate = $registrationDate;
 
@@ -338,19 +214,19 @@ class Annonce
         return $this->technicalControl;
     }
 
-    public function setTechnicalControl(string $technicalControl): self
+    public function setTechnicalControl(string $technicalControl): static
     {
         $this->technicalControl = $technicalControl;
 
         return $this;
     }
 
-    public function getFirstHand(): ?bool
+    public function isFirstHand(): ?bool
     {
         return $this->firstHand;
     }
 
-    public function setFirstHand(bool $firstHand): self
+    public function setFirstHand(bool $firstHand): static
     {
         $this->firstHand = $firstHand;
 
@@ -362,19 +238,19 @@ class Annonce
         return $this->color;
     }
 
-    public function setColor(string $color): self
+    public function setColor(string $color): static
     {
         $this->color = $color;
 
         return $this;
     }
 
-    public function getDoors(): ?int
+    public function getDoors(): ?string
     {
         return $this->doors;
     }
 
-    public function setDoors(int $doors): self
+    public function setDoors(string $doors): static
     {
         $this->doors = $doors;
 
@@ -386,33 +262,9 @@ class Annonce
         return $this->seats;
     }
 
-    public function setSeats(int $seats): self
+    public function setSeats(int $seats): static
     {
         $this->seats = $seats;
-
-        return $this;
-    }
-
-    public function getLength(): ?string
-    {
-        return $this->length;
-    }
-
-    public function setLength(string $length): self
-    {
-        $this->length = $length;
-
-        return $this;
-    }
-
-    public function getTrunkVolume(): ?string
-    {
-        return $this->trunkVolume;
-    }
-
-    public function setTrunkVolume(string $trunkVolume): self
-    {
-        $this->trunkVolume = $trunkVolume;
 
         return $this;
     }
@@ -422,7 +274,7 @@ class Annonce
         return $this->fiscalPower;
     }
 
-    public function setFiscalPower(int $fiscalPower): self
+    public function setFiscalPower(int $fiscalPower): static
     {
         $this->fiscalPower = $fiscalPower;
 
@@ -434,69 +286,57 @@ class Annonce
         return $this->horsePower;
     }
 
-    public function setHorsePower(int $horsePower): self
+    public function setHorsePower(int $horsePower): static
     {
         $this->horsePower = $horsePower;
 
         return $this;
     }
 
-    public function getFuelConsumption(): ?string
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getBrand(): ?string
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(string $brand): static
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): static
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getFuelConsumption(): ?float
     {
         return $this->fuelConsumption;
     }
 
-    public function setFuelConsumption(string $fuelConsumption): self
+    public function setFuelConsumption(float $fuelConsumption): static
     {
         $this->fuelConsumption = $fuelConsumption;
-
-        return $this;
-    }
-
-    public function getCo2Emission(): ?int
-    {
-        return $this->co2Emission;
-    }
-
-    public function setCo2Emission(int $co2Emission): self
-    {
-        $this->co2Emission = $co2Emission;
-
-        return $this;
-    }
-
-    public function getEuroNorm(): ?string
-    {
-        return $this->euroNorm;
-    }
-
-    public function setEuroNorm(string $euroNorm): self
-    {
-        $this->euroNorm = $euroNorm;
-
-        return $this;
-    }
-
-    public function getCritAir(): ?string
-    {
-        return $this->critAir;
-    }
-
-    public function setCritAir(string $critAir): self
-    {
-        $this->critAir = $critAir;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
 
         return $this;
     }
