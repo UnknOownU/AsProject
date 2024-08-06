@@ -1,11 +1,11 @@
 {# templates/base.html.twig #}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>{% block title %}Carbook - Free Bootstrap 4 Template{% endblock %}</title>
+<head>
+    <title>{% block title %}AS SERVICES{% endblock %}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+
     <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/open-iconic-bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
@@ -19,69 +19,12 @@
     <link rel="stylesheet" href="{{ asset('css/flaticon.css') }}">
     <link rel="stylesheet" href="{{ asset('css/icomoon.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    
-  </head>
-  <body>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> 
+    <!-- Ajout de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
     {% block body %}{% endblock %}
-    
-    {% block footer %}
-    <footer class="ftco-footer bg-dark ftco-section">
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-md">
-                    <div class="ftco-footer-widget mb-4">
-                        <h2 class="ftco-heading-2"><a href="#" class="logo">AS<span style="color: gold;">GARAGE</span></a></h2>
-                        <p>Bienvenue chez AS GARAGE, votre destination de confiance pour des voitures de haute qualité.</p>
-                        <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
-                            <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
-                            <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
-                            <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="ftco-footer-widget mb-4 ml-md-5">
-                        <h2 class="ftco-heading-2">Information</h2>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="py-2 d-block">À propos</a></li>
-                            <li><a href="#" class="py-2 d-block">Services</a></li>
-                            <li><a href="#" class="py-2 d-block">Termes et conditions</a></li>
-                            <li><a href="#" class="py-2 d-block">Politique de confidentialité</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="ftco-footer-widget mb-4">
-                        <h2 class="ftco-heading-2">Support client</h2>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="py-2 d-block">FAQ</a></li>
-                            <li><a href="#" class="py-2 d-block">Options de paiement</a></li>
-                            <li><a href="#" class="py-2 d-block">Conseils de réservation</a></li>
-                            <li><a href="#" class="py-2 d-block">Contactez-nous</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="ftco-footer-widget mb-4">
-                        <h2 class="ftco-heading-2">Vous avez des questions ?</h2>
-                        <div class="block-23 mb-3">
-                            <ul>
-                                <li><span class="icon icon-map-marker"></span><span class="text">203 Rue de la Voiture, 75000 Paris, France</span></li>
-                                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+33 1 23 45 67 89</span></a></li>
-                                <li><a href="#"><span class="icon icon-envelope"></span><span class="text">contact@asgarage.fr</span></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <p>&copy; {{ "now"|date("Y") }} AS GARAGE. Tous droits réservés.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-    {% endblock %}
     
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/jquery-migrate-3.0.1.min.js') }}"></script>
@@ -99,6 +42,6 @@
     <script src="{{ asset('js/scrollax.min.js') }}"></script>
     <script src="{{ asset('js/google-map.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-    
-  </body>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</body>
 </html>

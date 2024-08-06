@@ -33,18 +33,18 @@
             </div>
         </div>
         <div class="row">
-            {% for annonce in annonces %}
+            {% for annonceWithImage in annonces %}
                 <div class="col-md-4">
                     <div class="car-wrap rounded">
-                        <div class="img rounded" style="background-image: url('{{ annonce.image ? asset(annonce.image) : asset('images/default_car_image.jpg') }}');">
+                        <div class="img rounded" style="background-image: url('{{ annonceWithImage.base64Image ? 'data:image/jpeg;base64,' ~ annonceWithImage.base64Image : asset('images/default_car_image.jpg') }}');">
                         </div>
                         <div class="text">
-                            <h2 class="mb-0"><a href="#">{{ annonce.title }}</a></h2>
+                            <h2 class="mb-0"><a href="{{ path('annonce_show', { 'id': annonceWithImage.annonce.id }) }}">{{ annonceWithImage.annonce.title }}</a></h2>
                             <div class="d-flex mb-3">
-                                <span class="cat">{{ annonce.brand }}</span>
-                                <p class="price ml-auto">{{ annonce.price }} € <span>/ jour</span></p>
+                                <span class="cat">{{ annonceWithImage.annonce.brand }}</span>
+                                <p class="price ml-auto">{{ annonceWithImage.annonce.price }} € <span>/ jour</span></p>
                             </div>
-                            <p class="d-flex mb-0 d-block"><a href="#" class="btn btn-primary">Réserver maintenant</a> <a href="#" class="btn btn-secondary">Détails</a></p>
+                            <p class="d-flex mb-0 d-block"><a href="#" class="btn btn-primary">Réserver maintenant</a> <a href="{{ path('annonce_show', { 'id': annonceWithImage.annonce.id }) }}" class="btn btn-secondary">Détails</a></p>
                         </div>
                     </div>
                 </div>
