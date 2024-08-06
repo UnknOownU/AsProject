@@ -1,17 +1,17 @@
 <?php
 
-// src/DataFixtures/AnnonceFixtures.php
-
 namespace App\DataFixtures;
 
 use App\Entity\Annonce;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class AnnonceFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        $faker = Factory::create();
         $brands = ['Toyota', 'BMW', 'Mercedes', 'Audi', 'Ford', 'Honda', 'Nissan', 'Chevrolet', 'Kia', 'Hyundai'];
         $descriptions = [
             'Une voiture fiable et économique, idéale pour les trajets quotidiens.',
@@ -50,9 +50,14 @@ class AnnonceFixtures extends Fixture
                     ->setDoors((string)rand(3, 5))
                     ->setSeats(rand(4, 7))
                     ->setFiscalPower(rand(5, 10))
+                    ->setFuelConsumption(rand(6,7))
                     ->setHorsePower(rand(100, 300))
-                    ->setImage('images/default_car_image.jpg') // Placeholder for image data
                     ->setPrice(rand(5000, 50000));
+
+            // Charger une image fictive
+            $imagePath = __DIR__ . '/../../public/images/car-' . ($i % 5 + 1) . '.jpg';
+            $imageData = file_get_contents($imagePath);
+            $annonce->setImage($imageData);
 
             $manager->persist($annonce);
         }
@@ -60,4 +65,3 @@ class AnnonceFixtures extends Fixture
         $manager->flush();
     }
 }
-

@@ -1,16 +1,174 @@
 {# templates/annonce/show.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ annonce.title }}{% endblock %}
+{% block title %}Détails de la voiture{% endblock %}
 
 {% block body %}
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
-        <h1>{{ annonce.title }}</h1>
-        <p>{{ annonce.description }}</p>
-        <p>Kilométrage: {{ annonce.kilometrage }} km</p>
-        <p>Moteur: {{ annonce.engine }}</p>
-        <p>Prix: {{ annonce.price }} €</p>
-        <!-- Ajoute d'autres détails nécessaires -->
-        <a href="{{ path('annonces') }}" class="btn btn-primary">Retour aux annonces</a>
+        <a class="navbar-brand" href="{{ path('home') }}">AS<span style="color: gold;">GARAGE</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a href="{{ path('home') }}" class="nav-link">Accueil</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">À propos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Tarifs</a></li>
+                <li class="nav-item active"><a href="{{ path('annonces') }}" class="nav-link">Voitures</a></li>
+            </ul>
+        </div>
     </div>
+</nav>
+<!-- END nav -->
+
+<style>
+.card {
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e3e3e3;
+    font-weight: bold;
+    padding: 10px 15px;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-body ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.card-body ul li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.card-body ul li i {
+    margin-right: 10px;
+    color: #007bff;
+}
+
+.card-body p {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.gallery {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.gallery img {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.car-wrap {
+    margin-bottom: 20px;
+}
+
+.car-wrap .img {
+    height: 400px; /* Increase the height */
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+}
+
+#map {
+    width: 100%;
+    height: 300px; /* Adjust the height here */
+    border-radius: 8px;
+}
+</style>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-7 text-center">
+                <h2 class="mb-3">{{ annonce.title }}</h2>
+                <p>{{ annonce.description }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="car-wrap rounded">
+                    <div class="img rounded d-flex align-items-end" style="background-image: url('{{ base64Image ? 'data:image/jpeg;base64,' ~ base64Image : asset('images/default_car_image.jpg') }}');">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Caractéristiques
+                    </div>
+                    <div class="card-body">
+                        <p>{{ annonce.brand }} {{ annonce.carname }} {{ annonce.year }}</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-calendar-alt"></i> Année: <strong>{{ annonce.year }}</strong></li>
+                            <li><i class="fas fa-tachometer-alt"></i> Kilométrage: <strong>{{ annonce.kilometrage }} km</strong></li>
+                            <li><i class="fas fa-cogs"></i> Boîte de vitesse: <strong>{{ annonce.gearbox }}</strong></li>
+                            <li><i class="fas fa-gas-pump"></i> Énergie: <strong>{{ annonce.fuel }}</strong></li>
+                            <li><i class="fas fa-globe"></i> Provenance: <strong>{{ annonce.provenance }}</strong></li>
+                            <li><i class="fas fa-calendar-check"></i> Date d'enregistrement: <strong>{{ annonce.registrationDate|date('d/m/Y') }}</strong></li>
+                            <li><i class="fas fa-check-circle"></i> Contrôle technique: <strong>{{ annonce.technicalControl }}</strong></li>
+                            <li><i class="fas fa-handshake"></i> Première main: <strong>{{ annonce.firstHand ? 'Oui' : 'Non' }}</strong></li>
+                            <li><i class="fas fa-palette"></i> Couleur: <strong>{{ annonce.color }}</strong></li>
+                            <li><i class="fas fa-door-closed"></i> Nombre de portes: <strong>{{ annonce.doors }}</strong></li>
+                            <li><i class="fas fa-chair"></i> Nombre de sièges: <strong>{{ annonce.seats }}</strong></li>
+                            <li><i class="fas fa-horse"></i> Puissance fiscale: <strong>{{ annonce.fiscalPower }} CV</strong></li>
+                            <li><i class="fas fa-tachometer-alt"></i> Puissance DIN: <strong>{{ annonce.horsePower }} ch</strong></li>
+                            <li>
+                                <i class="fas fa-battery-three-quarters"></i> 
+                                {% if annonce.gearbox == 'Automatique' %}
+                                    Conso. batterie: <strong>{{ annonce.fuelConsumption }} kWh/100km</strong>
+                                {% else %}
+                                    Conso. moteur: <strong>{{ annonce.fuelConsumption }} l/100km</strong>
+                                {% endif %}
+                            </li>
+                            <li><i class="fas fa-euro-sign"></i> Prix: <strong>{{ annonce.price }} €</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <i class="fas fa-map-marker-alt"></i> Localisation
+                    </div>
+                    <div class="card-body">
+                        <div id="map"></div> <!-- Removed the inline style here -->
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var map = L.map('map').setView([48.8566, 2.3522], 13); // Paris coordinates
+                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                }).addTo(map);
+                                L.marker([48.8566, 2.3522]).addTo(map)
+                                    .bindPopup('Localisation de la voiture')
+                                    .openPopup();
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

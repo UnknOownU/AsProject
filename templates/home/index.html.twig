@@ -58,7 +58,7 @@
             {% for annonce in recentAnnonces %}
                 <div class="col-md-4">
                     <div class="car-wrap rounded ftco-animate">
-                        <div class="img rounded d-flex align-items-end" style="background-image: url('{{ annonce.image ? asset(annonce.image) : asset('images/default_car_image.jpg') }}');">
+                        <div class="img rounded d-flex align-items-end" style="background-image: url('{{ annonce.base64Image ? 'data:image/jpeg;base64,' ~ annonce.base64Image : asset('images/default_car_image.jpg') }}');">
                         </div>
                         <div class="text">
                             <h2 class="mb-0"><a href="#">{{ annonce.title }}</a></h2>
@@ -66,7 +66,7 @@
                                 <span class="cat">{{ annonce.brand }}</span>
                                 <p class="price ml-auto">{{ annonce.price }} € <span>/ jour</span></p>
                             </div>
-                            <p class="d-flex mb-0 d-block"><a href="#" class="btn btn-primary py-2 mr-1">Réserver maintenant</a> <a href="#" class="btn btn-secondary py-2 ml-1">Détails</a></p>
+                               <p class="d-flex mb-0 d-block"><a href="{{ path('annonce_show', { 'id': annonce.id }) }}" class="btn btn-primary">Réserver maintenant</a> <a href="{{ path('annonce_show', { 'id': annonce.id }) }}" class="btn btn-secondary">Détails</a></p>
                         </div>
                     </div>
                 </div>
