@@ -14,6 +14,7 @@
 
     .navbar, .ftco_navbar {
         background-color: #333;
+        padding: 10px 15px;
     }
 
     .navbar-brand span, .nav-link.active {
@@ -28,21 +29,32 @@
     .hero-wrap {
         background-color: #333;
         position: relative;
-        padding: 6em 0;
         background-size: cover;
-        background-attachment: fixed;
+        background-position: center; /* Centrer l'image */
+        background-repeat: no-repeat; /* Empêcher la répétition */
         color: #e5e5e5;
+        height: 75vh; /* Réglage de la hauteur pour correspondre à la carte */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .hero-wrap .overlay {
-        background-color: rgba(0, 0, 0, 0.7);
+        display: none; /* Désactiver l'overlay pour supprimer l'effet sombre */
     }
 
     .hero-wrap h1 {
-        color: #fca311;
         font-size: 3.5rem;
         font-weight: 700;
         line-height: 1.2;
+    }
+
+    .hero-wrap h1 span {
+        color: #fff; /* "AS" en blanc */
+    }
+
+    .hero-wrap h1 span:last-child {
+        color: #fca311; /* "Service" en jaune */
     }
 
     .hero-wrap p {
@@ -50,176 +62,32 @@
         font-size: 1.2rem;
     }
 
-    /* Section des Services */
-    .services-section {
-        padding: 50px 0;
-        background-color: #2b2b2b;
-        text-align: center;
-    }
-
-    .services-section h2 {
-        font-size: 2.5rem;
-        color: #fca311;
-        margin-bottom: 40px;
-    }
-
-    .services-section .service {
-        margin-bottom: 40px;
-    }
-
-    .services-section .service-icon {
-        font-size: 3rem;
-        color: #fca311;
-        margin-bottom: 20px;
-    }
-
-    .services-section .service-title {
-        font-size: 1.5rem;
-        color: #e5e5e5;
-        margin-bottom: 15px;
-    }
-
-    .services-section .service-description {
-        color: #b3b3b3;
-        font-size: 1rem;
-    }
-
-    /* Section des annonces */
-    .ftco-section.bg-light {
-        background-color: #1c1c1c !important;
-        padding: 20px;
-    }
-
-    /* Cartes de Voitures */
-    .car-card {
+    /* Styles pour les boutons */
+    .hero-buttons {
+        margin-top: 30px;
         display: flex;
-        background-color: #2b2b2b;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        margin-bottom: 20px;
-        transition: transform 0.2s ease-in-out;
-        width: 553px;
-        height: 167px;
-        align-items: center;
-        margin: 10px auto;
-    }
-
-    .car-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .car-card .car-image {
-        width: 224px;
-        height: 167px;
-    }
-
-    .car-card .car-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
-    }
-
-    .car-card .car-details {
-        width: 329px;
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-    }
-
-    .car-card .car-details h2 {
-        margin: 0;
-        font-size: 1.1rem;
-        color: #fca311;
-    }
-
-    .car-card .car-details .car-info {
-        font-size: 0.9rem;
-        color: #e5e5e5;
-        margin: 5px 0;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .car-card .car-details .car-info p {
-        margin-right: 15px;
-        margin-bottom: 5px;
-        display: flex;
-        align-items: center;
-    }
-
-    .car-card .car-details .car-info i {
-        margin-right: 5px;
-        color: #fca311;
-    }
-
-    .car-card .car-details .car-actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-    }
-
-    .car-card .car-details .car-price {
-        font-size: 1.3rem;
-        font-weight: bold;
-        color: #dc3545;
-    }
-
-    /* Boutons Customisés */
-    .btn-custom-secondary {
-        background-color: #007bff;
-        color: #ffffff;
-        border: none;
-        border-radius: 5px;
-        padding: 8px 10px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-    .btn-custom-secondary:hover {
-        background-color: #0056b3;
-    }
-
-    .car-actions .btn-custom-secondary {
-        align-self: flex-end;
-    }
-
-    /* Centrage des cartes */
-    .row {
+        gap: 20px; /* Espace entre les boutons */
         justify-content: center;
     }
 
-    /* Style pour le bouton Voir plus */
-    .btn-more {
-        display: block;
-        margin: 40px auto 0 auto;
-        padding: 10px 20px;
-        font-size: 1rem;
+    .hero-buttons .btn-custom {
         color: #fca311;
-        background-color: transparent;
         border: 1px solid #fca311;
+        padding: 10px 20px;
         border-radius: 5px;
-        text-align: center;
-        transition: opacity 0.3s ease;
-        opacity: 0.7;
         text-decoration: none;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    .btn-more:hover {
-        opacity: 1;
+    .hero-buttons .btn-custom:hover {
+        background-color: #fca311;
+        color: #1c1c1c;
     }
 
-    /* Map */
+    /* Section Map */
     #map {
         width: 100%;
-        height: 100vh; /* Hauteur de la carte égale à la hauteur de la fenêtre */
+        height: 75vh; /* La même hauteur que le Hero */
         margin-top: 40px;
     }
 
@@ -227,7 +95,7 @@
     footer {
         background-color: #333;
         color: #e5e5e5;
-        padding: 20px 0;
+        padding: 10px 0;
         text-align: center;
         font-size: 0.9rem;
     }
@@ -246,122 +114,21 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 <div class="hero-wrap ftco-degree-bg" style="background-image: url('images/bg_1.jpg');" data-stellar-background-ratio="0.5">
-    <div class="overlay"></div>
     <div class="container">
         <div class="row no-gutters slider-text justify-content-center align-items-center">
             <div class="col-lg-8 ftco-animate text-center">
                 <div class="text w-100 mb-md-5 pb-md-5">
-                    <h1 class="mb-4">Bienvenue à AS Garage</h1>
+                    <h1 class="mb-4"><span>AS</span> <span>Service</span></h1>
                     <p>Votre partenaire de confiance pour l'entretien, la réparation et la vente de véhicules.</p>
-                    <a href="#" class="btn btn-custom-primary mt-4" style="color:#fca311; border: 1px solid #fca311; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Voir Vidéo</a>
+                    <div class="hero-buttons">
+                        <a href="{{ path('annonces') }}" class="btn-custom">Voir les voitures disponibles</a>
+                        <a href="{{ path('home') }}" class="btn-custom">Voir nos services</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<section class="services-section">
-    <div class="container">
-        <h2>Nos Services</h2>
-        <div class="row">
-            <div class="col-md-4 service">
-                <div class="service-icon">
-                    <i class="fas fa-tools"></i>
-                </div>
-                <div class="service-title">Réparations Mécaniques</div>
-                <div class="service-description">
-                    Que ce soit pour des réparations mineures ou majeures, notre équipe d'experts garantit un service rapide et efficace.
-                </div>
-            </div>
-            <div class="col-md-4 service">
-                <div class="service-icon">
-                    <i class="fas fa-oil-can"></i>
-                </div>
-                <div class="service-title">Entretien de Véhicules</div>
-                <div class="service-description">
-                    Nous proposons un entretien complet de votre véhicule, y compris les vidanges, les changements de filtres, les vérifications des freins et bien plus encore.
-                </div>
-            </div>
-            <div class="col-md-4 service">
-                <div class="service-icon">
-                    <i class="fas fa-car-crash"></i>
-                </div>
-                <div class="service-title">Carrosserie et Peinture</div>
-                <div class="service-description">
-                    Remettez à neuf votre voiture avec nos services de carrosserie et de peinture de haute qualité, réalisés par des professionnels qualifiés.
-                </div>
-            </div>
-            <div class="col-md-4 service">
-                <div class="service-icon">
-                    <i class="fas fa-battery-full"></i>
-                </div>
-                <div class="service-title">Vente de Batteries</div>
-                <div class="service-description">
-                    Nous offrons une large gamme de batteries pour tous types de véhicules, avec installation et vérification incluses.
-                </div>
-            </div>
-            <div class="col-md-4 service">
-                <div class="service-icon">
-                    <i class="fas fa-tachometer-alt"></i>
-                </div>
-                <div class="service-title">Diagnostic Électronique</div>
-                <div class="service-description">
-                    Nos équipements de diagnostic à la pointe de la technologie nous permettent de détecter et de résoudre rapidement tout problème électronique.
-                </div>
-            </div>
-            <div class="col-md-4 service">
-                <div class="service-icon">
-                    <i class="fas fa-gas-pump"></i>
-                </div>
-                <div class="service-title">Service de Climatisation</div>
-                <div class="service-description">
-                    Restez au frais avec notre service de climatisation. Nous assurons la recharge, la réparation et l'entretien de votre système de climatisation.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="ftco-section bg-light">
-    <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-md-7 text-center heading-section ftco-animate">
-                <span class="subheading">Nos annonces</span>
-                <h2 class="mb-3">Voitures disponibles</h2>
-            </div>
-        </div>
-        <div class="row">
-            {% for annonce in recentAnnonces %}
-                <div class="col-12 d-flex justify-content-center">
-                    <div class="car-card">
-                        <div class="car-image">
-                            <img src="{{ annonce.base64Image ? 'data:image/jpeg;base64,' ~ annonce.base64Image : asset('images/default_car_image.jpg') }}" alt="Image de la voiture">
-                        </div>
-                        <div class="car-details">
-                            <h2>Annonce {{ loop.index }}</h2>
-                            <div class="car-info">
-                                <p><i class="fas fa-calendar-alt"></i> {{ annonce.year }}</p>
-                                <p><i class="fas fa-gas-pump"></i> {{ annonce.getFuel }}</p>
-                                <p><i class="fas fa-tachometer-alt"></i> {{ annonce.kilometrage }} km</p>
-                                <p><i class="fas fa-cogs"></i> {{ annonce.gearbox }}</p>
-                            </div>
-                            <div class="car-actions">
-                                <div class="car-price">{{ annonce.price }} €</div>
-                                <a href="{{ path('annonce_show', { 'id': annonce.id }) }}" class="btn btn-custom-secondary"><i class="fas fa-info-circle"></i> Détails</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        <!-- Bouton Voir plus -->
-        <div class="row">
-            <div class="col-12 text-center">
-                <a href="{{ path('annonces') }}" class="btn-more">Voir plus</a>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Map Section -->
 <section class="ftco-section bg-light">
@@ -370,25 +137,24 @@
     </div>
 </section>
 
-<footer>
-    <div class="container">
-        <p>&copy; {{ "now"|date("Y") }} AS Garage. Tous droits réservés. | <a href="{{ path('home') }}">Mentions Légales</a> | <a href="{{ path('home') }}">Contact</a></p>
-    </div>
-</footer>
-
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <!-- Leaflet Map Initialization -->
 <script>
-    var map = L.map('map').setView([48.8566, 2.3522], 13); // Replace with your garage's coordinates
+    var map = L.map('map').setView([48.8566, 2.3522], 13); // Remplacer par les coordonnées de votre garage
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+    // Application d'un thème de carte sombre
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
     L.marker([48.8566, 2.3522]).addTo(map)
-        .bindPopup('AS Garage')
+        .bindPopup('AS Service')
         .openPopup();
 </script>
 {% endblock %}

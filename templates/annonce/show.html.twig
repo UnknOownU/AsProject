@@ -4,103 +4,137 @@
 {% block title %}Détails de la voiture{% endblock %}
 
 {% block body %}
-<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-    <div class="container">
-        <a class="navbar-brand" href="{{ path('home') }}">AS<span style="color: gold;">GARAGE</span></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="oi oi-menu"></span> Menu
-        </button>
-
-        <div class="collapse navbar-collapse" id="ftco-nav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a href="{{ path('home') }}" class="nav-link">Accueil</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">À propos</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Services</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Tarifs</a></li>
-                <li class="nav-item active"><a href="{{ path('annonces') }}" class="nav-link">Voitures</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<!-- END nav -->
 
 <style>
-.card {
-    border: 1px solid #e3e3e3;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    overflow: hidden;
-}
+    body {
+        background-color: #1c1c1c;
+        color: #e5e5e5;
+        font-family: 'Roboto', sans-serif;
+    }
 
-.card-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e3e3e3;
-    font-weight: bold;
-    padding: 10px 15px;
-}
+    .ftco-section {
+        background-color: #1c1c1c !important;
+        padding: 4em 0;
+    }
 
-.card-body {
-    padding: 15px;
-}
+    .car-details-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+    }
 
-.card-body ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-}
+    .car-wrap {
+        flex: 3;
+    }
 
-.card-body ul li {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-}
+    .car-wrap .img {
+        height: 400px;
+        width: 100%;
+        background-size: cover;
+        background-position: center;
+        border-radius: 8px;
+        border: 1px solid #444;
+        margin-bottom: 20px;
+    }
 
-.card-body ul li i {
-    margin-right: 10px;
-    color: #007bff;
-}
+    .details-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
 
-.card-body p {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
+    .price-card, .location-card {
+        background-color: #2b2b2b;
+        border: 1px solid #333;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        color: #e5e5e5;
+    }
 
-.gallery {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    margin-bottom: 20px;
-}
+    .price-card {
+        padding: 20px;
+        text-align: center;
+    }
 
-.gallery img {
-    width: 150px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-}
+    .price-card .price {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: #fff;
+        margin-bottom: 10px;
+    }
 
-.car-wrap {
-    margin-bottom: 20px;
-}
+    .price-card .price i {
+        color: #fca311;
+        margin-right: 8px;
+    }
 
-.car-wrap .img {
-    height: 400px; /* Increase the height */
-    width: 100%;
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
-}
+    .price-card .phone-number {
+        font-size: 1.2rem;
+        color: #fca311;
+    }
 
-#map {
-    width: 100%;
-    height: 300px; /* Adjust the height here */
-    border-radius: 8px;
-}
+    .price-card .phone-number i {
+        margin-right: 8px;
+    }
+
+    .location-card .card-header {
+        background-color: #333;
+        border-bottom: 1px solid #444;
+        font-weight: bold;
+        padding: 10px 15px;
+        color: #fca311;
+        border-radius: 8px 8px 0 0;
+        margin: 0;
+    }
+
+    .location-card .card-body {
+        padding: 15px;
+    }
+
+    .card-body ul {
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+    }
+
+    .card-body ul li {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .card-body ul li strong {
+        color: #fca311;
+    }
+
+    #map {
+        width: 100%;
+        height: 300px;
+        border-radius: 8px;
+        border: 1px solid #444;
+    }
+
+    h2 {
+        color: #fca311;
+    }
+
+    p {
+        color: #e5e5e5;
+    }
+
+    .characteristics-card {
+        margin-bottom: 20px;
+    }
+
+    .characteristics-card .card-header {
+        background-color: #444;
+        color: #fca311;
+    }
 </style>
 
-<section class="ftco-section bg-light">
+<section class="ftco-section">
     <div class="container">
         <div class="row justify-content-center mb-5">
             <div class="col-md-7 text-center">
@@ -108,52 +142,87 @@
                 <p>{{ annonce.description }}</p>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="car-wrap rounded">
-                    <div class="img rounded d-flex align-items-end" style="background-image: url('{{ base64Image ? 'data:image/jpeg;base64,' ~ base64Image : asset('images/default_car_image.jpg') }}');">
-                    </div>
+        <div class="car-details-container">
+            <div class="car-wrap">
+                <div class="img rounded d-flex align-items-end" style="background-image: url('{{ base64Image ? 'data:image/jpeg;base64,' ~ base64Image : asset('images/default_car_image.jpg') }}');">
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
+                <div class="card characteristics-card">
                     <div class="card-header">
-                        <i class="fas fa-info-circle"></i> Caractéristiques
+                        <i class="fas fa-info-circle"></i> Général
                     </div>
                     <div class="card-body">
-                        <p>{{ annonce.brand }} {{ annonce.carname }} {{ annonce.year }}</p>
                         <ul class="list-unstyled">
-                            <li><i class="fas fa-calendar-alt"></i> Année: <strong>{{ annonce.year }}</strong></li>
-                            <li><i class="fas fa-tachometer-alt"></i> Kilométrage: <strong>{{ annonce.kilometrage }} km</strong></li>
-                            <li><i class="fas fa-cogs"></i> Boîte de vitesse: <strong>{{ annonce.gearbox }}</strong></li>
-                            <li><i class="fas fa-gas-pump"></i> Énergie: <strong>{{ annonce.fuel }}</strong></li>
-                            <li><i class="fas fa-globe"></i> Provenance: <strong>{{ annonce.provenance }}</strong></li>
-                            <li><i class="fas fa-calendar-check"></i> Date d'enregistrement: <strong>{{ annonce.registrationDate|date('d/m/Y') }}</strong></li>
-                            <li><i class="fas fa-check-circle"></i> Contrôle technique: <strong>{{ annonce.technicalControl }}</strong></li>
-                            <li><i class="fas fa-handshake"></i> Première main: <strong>{{ annonce.firstHand ? 'Oui' : 'Non' }}</strong></li>
-                            <li><i class="fas fa-palette"></i> Couleur: <strong>{{ annonce.color }}</strong></li>
-                            <li><i class="fas fa-door-closed"></i> Nombre de portes: <strong>{{ annonce.doors }}</strong></li>
-                            <li><i class="fas fa-chair"></i> Nombre de sièges: <strong>{{ annonce.seats }}</strong></li>
-                            <li><i class="fas fa-horse"></i> Puissance fiscale: <strong>{{ annonce.fiscalPower }} CV</strong></li>
-                            <li><i class="fas fa-tachometer-alt"></i> Puissance DIN: <strong>{{ annonce.horsePower }} ch</strong></li>
-                            <li>
-                                <i class="fas fa-battery-three-quarters"></i> 
-                                {% if annonce.gearbox == 'Automatique' %}
-                                    Conso. batterie: <strong>{{ annonce.fuelConsumption }} kWh/100km</strong>
-                                {% else %}
-                                    Conso. moteur: <strong>{{ annonce.fuelConsumption }} l/100km</strong>
-                                {% endif %}
-                            </li>
-                            <li><i class="fas fa-euro-sign"></i> Prix: <strong>{{ annonce.price }} €</strong></li>
+                            <li><strong>Marque :</strong> {{ annonce.brand }}</li>
+                            <li><strong>Modèle :</strong> {{ annonce.carname }}</li>
+                            <li><strong>Année :</strong> {{ annonce.year }}</li>
+                            <li><strong>Kilométrage :</strong> {{ annonce.kilometrage }} km</li>
+                            <li><strong>Provenance :</strong> {{ annonce.provenance }}</li>
                         </ul>
                     </div>
                 </div>
-                <div class="card mt-4">
+                <div class="card characteristics-card">
+                    <div class="card-header">
+                        <i class="fas fa-cogs"></i> Mécanique
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Boîte de vitesse :</strong> {{ annonce.gearbox }}</li>
+                            <li><strong>Énergie :</strong> {{ annonce.fuel }}</li>
+                            <li><strong>Puissance fiscale :</strong> {{ annonce.fiscalPower }} CV</li>
+                            <li><strong>Puissance DIN :</strong> {{ annonce.horsePower }} ch</li>
+                            <li><strong>Consommation :</strong>
+                                {% if annonce.gearbox == 'Automatique' %}
+                                    {{ annonce.fuelConsumption }} kWh/100km
+                                {% else %}
+                                    {{ annonce.fuelConsumption }} l/100km
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card characteristics-card">
+                    <div class="card-header">
+                        <i class="fas fa-ruler-combined"></i> Dimensions
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Nombre de portes :</strong> {{ annonce.doors }}</li>
+                            <li><strong>Nombre de sièges :</strong> {{ annonce.seats }}</li>
+                            <li><strong>Couleur :</strong> {{ annonce.color }}</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card characteristics-card">
+                    <div class="card-header">
+                        <i class="fas fa-check-circle"></i> État
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Contrôle technique :</strong> {{ annonce.technicalControl }}</li>
+                            <li><strong>Date d'enregistrement :</strong> {{ annonce.registrationDate|date('d/m/Y') }}</li>
+                            <li><strong>Première main :</strong> {{ annonce.firstHand ? 'Oui' : 'Non' }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="details-section">
+                <!-- Card pour le prix et le numéro de téléphone -->
+                <div class="price-card">
+                    <div class="price">
+                        <i class="fas fa-euro-sign"></i> {{ annonce.price }} €
+                    </div>
+                    <div class="phone-number">
+                        <i class="fas fa-phone-alt"></i> Contact: <strong>06 12 34 56 78</strong>
+                    </div>
+                </div>
+
+                <!-- Card pour la localisation -->
+                <div class="location-card">
                     <div class="card-header">
                         <i class="fas fa-map-marker-alt"></i> Localisation
                     </div>
                     <div class="card-body">
-                        <div id="map"></div> <!-- Removed the inline style here -->
+                        <div id="map"></div>
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 var map = L.map('map').setView([48.8566, 2.3522], 13); // Paris coordinates
