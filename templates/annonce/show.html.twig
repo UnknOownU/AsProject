@@ -17,15 +17,8 @@
         padding: 4em 0;
     }
 
-    .car-details-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
-    }
-
     .car-wrap {
-        flex: 3;
+        position: relative;
     }
 
     .car-wrap .img {
@@ -36,77 +29,117 @@
         border-radius: 8px;
         border: 1px solid #444;
         margin-bottom: 20px;
+        position: relative; /* Important pour positionner les boutons correctement */
     }
 
-    .details-section {
-        flex: 1;
+    /* Boutons de navigation pour les images */
+    .nav-button {
+        position: absolute;
+        top: 50%;  /* Positionnement vertical centré */
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.8); /* Noir avec transparence */
+        color: #fff;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        z-index: 1000;
+        font-size: 18px;
+    }
+
+    .nav-button.left {
+        left: 15px; /* Ajuster pour bien coller au bord gauche */
+    }
+
+    .nav-button.right {
+        right: 15px; /* Ajuster pour bien coller au bord droit */
+    }
+
+    .thumbnails {
         display: flex;
-        flex-direction: column;
-        gap: 20px;
+        gap: 10px;
+        margin-top: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
     }
 
-    .price-card, .location-card {
+    .thumbnail {
+        width: 100px;
+        height: 75px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 4px;
+        border: 2px solid #444;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+    }
+
+    .thumbnail:hover, .thumbnail.active {
+        border-color: #e3c00e;
+    }
+
+    .price-card {
         background-color: #2b2b2b;
         border: 1px solid #333;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         color: #e5e5e5;
-    }
-
-    .price-card {
-        padding: 20px;
         text-align: center;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
 
     .price-card .price {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
         font-weight: bold;
         color: #fff;
-        margin-bottom: 10px;
-    }
-
-    .price-card .price i {
-        color: #fca311;
-        margin-right: 8px;
+        letter-spacing: 0.1rem;
     }
 
     .price-card .phone-number {
         font-size: 1.2rem;
         color: #fca311;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        background-color: #444;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        filter: blur(5px);
+        transition: filter 0.3s ease;
+    }
+
+    .price-card .phone-number:hover {
+        filter: blur(0);
     }
 
     .price-card .phone-number i {
-        margin-right: 8px;
+        margin-right: 10px;
+        color: #e3c00e;
     }
 
-    .location-card .card-header {
+    .location-card, .characteristics-card {
+        background-color: #2b2b2b;
+        border: 1px solid #333;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        color: #e5e5e5;
+        margin-bottom: 20px;
+    }
+
+    .location-card .card-header, .characteristics-card .card-header {
         background-color: #333;
         border-bottom: 1px solid #444;
         font-weight: bold;
         padding: 10px 15px;
-        color: #fca311;
+        color: #e3c00e;
         border-radius: 8px 8px 0 0;
         margin: 0;
-    }
-
-    .location-card .card-body {
-        padding: 15px;
-    }
-
-    .card-body ul {
-        padding: 0;
-        margin: 0;
-        list-style-type: none;
-    }
-
-    .card-body ul li {
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .card-body ul li strong {
-        color: #fca311;
     }
 
     #map {
@@ -117,20 +150,24 @@
     }
 
     h2 {
-        color: #fca311;
+        color: #e3c00e;
+        text-align: center;
     }
 
     p {
         color: #e5e5e5;
+        text-align: center;
     }
 
-    .characteristics-card {
-        margin-bottom: 20px;
-    }
+    @media (max-width: 768px) {
+        .price-card {
+            order: -1;
+            margin-bottom: 20px;
+        }
 
-    .characteristics-card .card-header {
-        background-color: #444;
-        color: #fca311;
+        .car-wrap {
+            margin-top: 20px;
+        }
     }
 </style>
 
@@ -142,102 +179,162 @@
                 <p>{{ annonce.description }}</p>
             </div>
         </div>
-        <div class="car-details-container">
-            <div class="car-wrap">
-                <div class="img rounded d-flex align-items-end" style="background-image: url('{{ base64Image ? 'data:image/jpeg;base64,' ~ base64Image : asset('images/default_car_image.jpg') }}');">
-                </div>
-                <div class="card characteristics-card">
-                    <div class="card-header">
-                        <i class="fas fa-info-circle"></i> Général
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="car-wrap">
+                    <div id="main-image" class="img rounded d-flex align-items-end" style="background-image: url('{{ images[0] ? 'data:image/jpeg;base64,' ~ images[0] : asset('images/default_car_image.jpg') }}');">
+                        <!-- Boutons de navigation Bootstrap -->
+                        <button class="btn btn-dark nav-button left" onclick="previousImage()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button> <!-- Bouton précédent -->
+                        <button class="btn btn-dark nav-button right" onclick="nextImage()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button> <!-- Bouton suivant -->
                     </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li><strong>Marque :</strong> {{ annonce.brand }}</li>
-                            <li><strong>Modèle :</strong> {{ annonce.carname }}</li>
-                            <li><strong>Année :</strong> {{ annonce.year }}</li>
-                            <li><strong>Kilométrage :</strong> {{ annonce.kilometrage }} km</li>
-                            <li><strong>Provenance :</strong> {{ annonce.provenance }}</li>
-                        </ul>
+
+                    <div class="thumbnails">
+                        {% for image in images %}
+                            <div class="thumbnail" style="background-image: url('data:image/jpeg;base64,{{ image }}');" onclick="setMainImage({{ loop.index0 }})" id="thumb-{{ loop.index0 }}">
+                            </div>
+                        {% endfor %}
                     </div>
-                </div>
-                <div class="card characteristics-card">
-                    <div class="card-header">
-                        <i class="fas fa-cogs"></i> Mécanique
+
+                    <div class="card characteristics-card">
+                        <div class="card-header">
+                            <i class="fas fa-info-circle"></i> Général
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>Marque :</strong> {{ annonce.brand }}</li>
+                                <li><strong>Modèle :</strong> {{ annonce.carname }}</li>
+                                <li><strong>Année :</strong> {{ annonce.year }}</li>
+                                <li><strong>Kilométrage :</strong> {{ annonce.kilometrage }} km</li>
+                                <li><strong>Provenance :</strong> {{ annonce.provenance }}</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li><strong>Boîte de vitesse :</strong> {{ annonce.gearbox }}</li>
-                            <li><strong>Énergie :</strong> {{ annonce.fuel }}</li>
-                            <li><strong>Puissance fiscale :</strong> {{ annonce.fiscalPower }} CV</li>
-                            <li><strong>Puissance DIN :</strong> {{ annonce.horsePower }} ch</li>
-                            <li><strong>Consommation :</strong>
-                                {% if annonce.gearbox == 'Automatique' %}
-                                    {{ annonce.fuelConsumption }} kWh/100km
-                                {% else %}
-                                    {{ annonce.fuelConsumption }} l/100km
-                                {% endif %}
-                            </li>
-                        </ul>
+                    <div class="card characteristics-card">
+                        <div class="card-header">
+                            <i class="fas fa-cogs"></i> Mécanique
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>Boîte de vitesse :</strong> {{ annonce.gearbox }}</li>
+                                <li><strong>Énergie :</strong> {{ annonce.fuel }}</li>
+                                <li><strong>Puissance fiscale :</strong> {{ annonce.fiscalPower }} CV</li>
+                                <li><strong>Puissance DIN :</strong> {{ annonce.horsePower }} ch</li>
+                                <li><strong>Consommation :</strong>
+                                    {% if annonce.gearbox == 'Automatique' %}
+                                        {{ annonce.fuelConsumption }} kWh/100km
+                                    {% else %}
+                                        {{ annonce.fuelConsumption }} l/100km
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="card characteristics-card">
-                    <div class="card-header">
-                        <i class="fas fa-ruler-combined"></i> Dimensions
+                    <div class="card characteristics-card">
+                        <div class="card-header">
+                            <i class="fas fa-ruler-combined"></i> Dimensions
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>Nombre de portes :</strong> {{ annonce.doors }}</li>
+                                <li><strong>Nombre de sièges :</strong> {{ annonce.seats }}</li>
+                                <li><strong>Couleur :</strong> {{ annonce.color }}</strong></li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li><strong>Nombre de portes :</strong> {{ annonce.doors }}</li>
-                            <li><strong>Nombre de sièges :</strong> {{ annonce.seats }}</li>
-                            <li><strong>Couleur :</strong> {{ annonce.color }}</strong></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="card characteristics-card">
-                    <div class="card-header">
-                        <i class="fas fa-check-circle"></i> État
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li><strong>Contrôle technique :</strong> {{ annonce.technicalControl }}</li>
-                            <li><strong>Date d'enregistrement :</strong> {{ annonce.registrationDate|date('d/m/Y') }}</li>
-                            <li><strong>Première main :</strong> {{ annonce.firstHand ? 'Oui' : 'Non' }}</li>
-                        </ul>
+                    <div class="card characteristics-card">
+                        <div class="card-header">
+                            <i class="fas fa-check-circle"></i> État
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>Contrôle technique :</strong> {{ annonce.technicalControl }}</li>
+                                <li><strong>Date d'enregistrement :</strong> {{ annonce.registrationDate|date('d/m/Y') }}</li>
+                                <li><strong>Première main :</strong> {{ annonce.firstHand ? 'Oui' : 'Non' }}</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="details-section">
-                <!-- Card pour le prix et le numéro de téléphone -->
-                <div class="price-card">
-                    <div class="price">
-                        <i class="fas fa-euro-sign"></i> {{ annonce.price }} €
+            <div class="col-lg-4">
+                <div class="details-section">
+                    <!-- Card pour le prix et le numéro de téléphone -->
+                    <div class="price-card mb-4">
+                        <div class="price">
+                            {{ annonce.price | number_format(0, ',', ' ') }} €
+                        </div>
+                        <a href="tel:0612345678" class="phone-number">
+                            <i class="fas fa-phone-alt"></i> 06 12 34 56 78
+                        </a>
                     </div>
-                    <div class="phone-number">
-                        <i class="fas fa-phone-alt"></i> Contact: <strong>06 12 34 56 78</strong>
-                    </div>
-                </div>
 
-                <!-- Card pour la localisation -->
-                <div class="location-card">
-                    <div class="card-header">
-                        <i class="fas fa-map-marker-alt"></i> Localisation
-                    </div>
-                    <div class="card-body">
-                        <div id="map"></div>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                var map = L.map('map').setView([48.8566, 2.3522], 13); // Paris coordinates
-                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                }).addTo(map);
-                                L.marker([48.8566, 2.3522]).addTo(map)
-                                    .bindPopup('Localisation de la voiture')
-                                    .openPopup();
-                            });
-                        </script>
+                    <!-- Card pour la localisation -->
+                    <div class="card location-card">
+                        <div class="card-header">
+                            <i class="fas fa-map-marker-alt"></i> Localisation
+                        </div>
+                        <div class="card-body">
+                            <div id="map"></div>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    var map = L.map('map').setView([48.8566, 2.3522], 13); // Paris coordinates
+                                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    }).addTo(map);
+                                    L.marker([48.8566, 2.3522]).addTo(map)
+                                        .bindPopup('Localisation de la voiture')
+                                        .openPopup();
+                                });
+                            </script>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+    let currentIndex = 0;
+    const images = {{ images|json_encode|raw }};
+    const mainImage = document.getElementById('main-image');
+
+    function updateImage(index) {
+        mainImage.style.backgroundImage = `url('data:image/jpeg;base64,${images[index]}')`;
+        updateThumbnails(index);
+    }
+
+    function previousImage() {
+        currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
+        updateImage(currentIndex);
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
+        updateImage(currentIndex);
+    }
+
+    function setMainImage(index) {
+        currentIndex = index;
+        updateImage(index);
+    }
+
+    function updateThumbnails(activeIndex) {
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        thumbnails.forEach((thumbnail, index) => {
+            if (index === activeIndex) {
+                thumbnail.classList.add('active');
+            } else {
+                thumbnail.classList.remove('active');
+            }
+        });
+    }
+
+    // Initialiser la première miniature comme active
+    updateThumbnails(0);
+</script>
+
 {% endblock %}

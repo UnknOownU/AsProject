@@ -18,11 +18,11 @@ class HomeController extends AbstractController
 
         // Convertir les images BLOB en base64
         foreach ($recentAnnonces as $annonce) {
-            if ($annonce->getImage()) {
-                $annonce->base64Image = base64_encode(stream_get_contents($annonce->getImage()));
-            } else {
-                $annonce->base64Image = null;
+            $base64Images = [];
+            foreach ($annonce->getImages() as $image) {
+                $base64Images[] = base64_encode(stream_get_contents($image->getData()));
             }
+            $annonce->base64Images = $base64Images;
         }
 
         return $this->render('home/index.html.twig', [

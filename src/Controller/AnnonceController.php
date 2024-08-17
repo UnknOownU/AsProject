@@ -14,8 +14,8 @@ class AnnonceController extends AbstractController
     #[Route('/annonces', name: 'annonces')]
     public function index(AnnonceRepository $annonceRepository, Request $request): Response
     {
-        $page = max(1, $request->query->getInt('page', 1)); // Récupérer la page courante, par défaut 1
-        $limit = 10; // Limiter à 10 annonces par page
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = 10;
         $offset = ($page - 1) * $limit;
 
         // Récupérer les annonces paginées
@@ -28,36 +28,37 @@ class AnnonceController extends AbstractController
         $totalItems = count($paginator);
         $pagesCount = ceil($totalItems / $limit);
 
-        $annoncesWithBase64Images = [];
-        foreach ($paginator as $annonce) {
-            $base64Image = null;
-            if ($annonce->getImage()) {
-                $base64Image = base64_encode(stream_get_contents($annonce->getImage()));
-            }
-            $annoncesWithBase64Images[] = [
-                'annonce' => $annonce,
-                'base64Image' => $base64Image,
-            ];
+        // Si la page demandée dépasse le nombre de pages disponibles, ajuster
+        if ($page > $pagesCount) {
+            $page = $pagesCount;
+            $offset = ($page - 1) * $limit;
+            $query = $annonceRepository->createQueryBuilder('a')
+                ->setFirstResult($offset)
+                ->setMaxResults($limit)
+                ->getQuery();
+            $paginator = new Paginator($query);
         }
+
+        // Ajouter les images à chaque annonce
+        $annoncesWithImages = array_map(function (Annonce $annonce) {
+            $images = [];
+            foreach ($annonce->getImages() as $image) {
+                $imageData = stream_get_contents($image->getData());
+                if ($imageData !== false) {
+                    $images[] = base64_encode($imageData);
+                }
+            }
+            return [
+                'annonce' => $annonce,
+                'images' => $images,
+            ];
+        }, iterator_to_array($paginator));
 
         // Définir les pages à afficher
-        $pagesToShow = [];
-        if ($pagesCount > 1) {
-            $pagesToShow[] = 1;
-            if ($page > 3) {
-                $pagesToShow[] = '...';
-            }
-            for ($i = max(2, $page - 2); $i <= min($pagesCount - 1, $page + 2); $i++) {
-                $pagesToShow[] = $i;
-            }
-            if ($page < $pagesCount - 2) {
-                $pagesToShow[] = '...';
-            }
-            $pagesToShow[] = $pagesCount;
-        }
+        $pagesToShow = $this->getPagesToShow($page, $pagesCount);
 
         return $this->render('annonce/index.html.twig', [
-            'annonces' => $annoncesWithBase64Images,
+            'annonces' => $annoncesWithImages,
             'total_pages' => $pagesCount,
             'current_page' => $page,
             'pages_to_show' => $pagesToShow,
@@ -67,14 +68,38 @@ class AnnonceController extends AbstractController
     #[Route('/annonces/{id}', name: 'annonce_show')]
     public function show(Annonce $annonce): Response
     {
-        $base64Image = null;
-        if ($annonce->getImage()) {
-            $base64Image = base64_encode(stream_get_contents($annonce->getImage()));
+        $images = [];
+        foreach ($annonce->getImages() as $image) {
+            $imageData = stream_get_contents($image->getData());
+            if ($imageData !== false) {
+                $images[] = base64_encode($imageData);
+            }
         }
 
         return $this->render('annonce/show.html.twig', [
             'annonce' => $annonce,
-            'base64Image' => $base64Image,
+            'images' => $images,
         ]);
+    }
+
+    private function getPagesToShow(int $currentPage, int $totalPages): array
+    {
+        $pagesToShow = [];
+
+        if ($totalPages > 1) {
+            $pagesToShow[] = 1;
+            if ($currentPage > 3) {
+                $pagesToShow[] = '...';
+            }
+            for ($i = max(2, $currentPage - 2); $i <= min($totalPages - 1, $currentPage + 2); $i++) {
+                $pagesToShow[] = $i;
+            }
+            if ($currentPage < $totalPages - 2) {
+                $pagesToShow[] = '...';
+            }
+            $pagesToShow[] = $totalPages;
+        }
+
+        return $pagesToShow;
     }
 }

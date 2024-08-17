@@ -24,6 +24,9 @@
         body {
             background-color: #000000;
             color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Liens pour s'assurer qu'ils sont visibles sur fond noir */
@@ -52,7 +55,7 @@
 
         /* Ajustement de la navigation */
         .navbar, .ftco_navbar {
-            background-color: #333333;
+            background-color: #212529; /* Couleur de la navbar et du footer */
         }
 
         .navbar-brand span {
@@ -69,11 +72,12 @@
         
         /* Footer */
         footer {
-            background-color: #333333;
+            background-color: #212529; /* Même couleur que la navbar */
             color: #e5e5e5;
             padding: 20px 0;
             text-align: center;
             font-size: 0.9rem;
+            margin-top: auto; /* Pousse le footer en bas */
         }
 
         footer a {
@@ -106,7 +110,10 @@
         </div>
     </div>
 </nav>
-    {% block body %}{% endblock %}
+
+    <main class="flex-grow-1">
+        {% block body %}{% endblock %}
+    </main>
 
     <!-- Footer -->
     <footer>

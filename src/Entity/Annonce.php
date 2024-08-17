@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\Image;
 use App\Repository\AnnonceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -65,9 +68,6 @@ class Annonce
     #[ORM\Column]
     private ?int $horsePower = null;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $image = null;
-
     #[ORM\Column(length: 255)]
     private ?string $brand = null;
 
@@ -77,16 +77,17 @@ class Annonce
     #[ORM\Column]
     private ?float $fuelConsumption = null;
 
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Image::class, cascade: ['persist', 'remove'])]
+    private Collection $images;
+
+    public function __construct()
+    {
+        $this->images = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -293,18 +294,6 @@ class Annonce
         return $this;
     }
 
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    public function setImage($image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
     public function getBrand(): ?string
     {
         return $this->brand;
@@ -337,6 +326,36 @@ class Annonce
     public function setFuelConsumption(float $fuelConsumption): static
     {
         $this->fuelConsumption = $fuelConsumption;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setAnnonce($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getAnnonce() === $this) {
+                $image->setAnnonce(null);
+            }
+        }
 
         return $this;
     }

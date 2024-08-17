@@ -23,65 +23,6 @@
         gap: 20px;
     }
 
-    .filter-section {
-        flex: 0 0 250px;
-        background-color: #2b2b2b;
-        border-radius: 8px;
-        padding: 20px;
-        border: 1px solid #333;
-        color: #e5e5e5;
-    }
-
-    .filter-section .form-group {
-        margin-bottom: 15px;
-    }
-
-    .filter-section .form-group label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-        color: #fca311;
-    }
-
-    .filter-section .form-control,
-    .filter-section .form-control-range input {
-        background-color: #3c3c3c;
-        border: 1px solid #555;
-        border-radius: 5px;
-        padding: 10px;
-        color: #e5e5e5;
-    }
-
-    .filter-section .form-control::placeholder {
-        color: #aaa;
-    }
-
-    .filter-section .form-control-range {
-        display: flex;
-        gap: 5px;
-    }
-
-    .filter-section .form-control-range input[type="number"] {
-        flex: 1;
-    }
-
-    .filter-section .btn-filter {
-        background-color: #fca311;
-        color: #1c1c1c;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        width: 100%;
-        text-align: center;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-    }
-
-    .filter-section .btn-filter:hover {
-        background-color: #e38d02;
-    }
-
     .car-list {
         flex: 1;
         display: flex;
@@ -133,12 +74,12 @@
     .car-card .car-details h2 {
         margin: 0;
         font-size: 1.1rem;
-        color: #fca311;
+        color: #e3c00e; /* Titre de la carte */
     }
 
     .car-card .car-details .car-info {
         font-size: 0.9rem;
-        color: #e5e5e5;
+        color: #e5e5e5; /* Couleur des icônes et des informations */
         margin: 5px 0;
         display: flex;
         flex-wrap: wrap;
@@ -154,7 +95,7 @@
 
     .car-card .car-details .car-info i {
         margin-right: 5px;
-        color: #fca311;
+        color: #e5e5e5; /* Couleur des icônes */
     }
 
     .car-card .car-details .car-actions {
@@ -166,7 +107,7 @@
     .car-card .car-details .car-price {
         font-size: 1.3rem;
         font-weight: bold;
-        color: #dc3545;
+        color: #e5e5e5; /* Couleur du prix */
     }
 
     .btn-custom {
@@ -187,11 +128,6 @@
         .annonce-page {
             flex-direction: column;
             align-items: center;
-        }
-
-        .filter-section {
-            width: 100%;
-            margin-bottom: 20px;
         }
 
         .car-list {
@@ -328,68 +264,70 @@
                 <h2 class="mb-3">Voitures disponibles</h2>
             </div>
         </div>
-            <!-- Colonne des annonces -->
-            <div class="car-list">
-                <div class="row justify-content-center">
-                    {% for annonceWithImage in annonces %}
-                        <div class="col-lg-12 d-flex justify-content-center">
-                            <div class="car-card">
-                                <div class="car-image">
-                                    <img src="{{ annonceWithImage.base64Image ? 'data:image/jpeg;base64,' ~ annonceWithImage.base64Image : asset('images/default_car_image.jpg') }}" alt="Image de la voiture">
+        <div class="car-list">
+            <div class="row justify-content-center">
+                {% for annonceWithImages in annonces %}
+                    <div class="col-lg-12 d-flex justify-content-center">
+                        <div class="car-card">
+                            <div class="car-image">
+                                {% if annonceWithImages.images|length > 0 %}
+                                    <img src="data:image/jpeg;base64,{{ annonceWithImages.images[0] }}" alt="Image de la voiture">
+                                {% else %}
+                                    <img src="{{ asset('images/default_car_image.jpg') }}" alt="Image de la voiture">
+                                {% endif %}
+                            </div>
+                            <div class="car-details">
+                                <h2>{{ annonceWithImages.annonce.title }}</h2>
+                                <div class="car-info">
+                                    <p><i class="fas fa-calendar-alt"></i> {{ annonceWithImages.annonce.year }}</p>
+                                    <p><i class="fas fa-gas-pump"></i> {{ annonceWithImages.annonce.fuel }}</p>
+                                    <p><i class="fas fa-tachometer-alt"></i> {{ annonceWithImages.annonce.kilometrage }} km</p>
+                                    <p><i class="fas fa-cogs"></i> {{ annonceWithImages.annonce.gearbox }}</p>
                                 </div>
-                                <div class="car-details">
-                                    <h2>Annonce {{ loop.index }}</h2>
-                                    <div class="car-info">
-                                        <p><i class="fas fa-calendar-alt"></i> {{ annonceWithImage.annonce.year }}</p>
-                                        <p><i class="fas fa-gas-pump"></i> {{ annonceWithImage.annonce.fuel }}</p>
-                                        <p><i class="fas fa-tachometer-alt"></i> {{ annonceWithImage.annonce.kilometrage }} km</p>
-                                        <p><i class="fas fa-cogs"></i> {{ annonceWithImage.annonce.gearbox }}</p>
-                                    </div>
-                                    <div class="car-actions">
-                                        <div class="car-price">{{ annonceWithImage.annonce.price }} €</div>
-                                        <a href="{{ path('annonce_show', { 'id': annonceWithImage.annonce.id }) }}" class="btn-custom">Détails</a>
-                                    </div>
+                                <div class="car-actions">
+                                    <div class="car-price">{{ annonceWithImages.annonce.price | number_format(0, ',', ' ') }} €</div>
+                                    <a href="{{ path('annonce_show', { 'id': annonceWithImages.annonce.id }) }}" class="btn-custom">Détails</a>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
-
-                <!-- Pagination -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <nav>
-                            <ul class="pagination justify-content-center">
-                                {% if current_page > 1 %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ path('annonces', {page: current_page - 1}) }}" aria-label="Précédent">
-                                            <span aria-hidden="true">&laquo;</span>
-                                            <span class="sr-only">Précédent</span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-
-                                {% for page in pages_to_show %}
-                                    {% if page == '...' %}
-                                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                                    {% else %}
-                                        <li class="page-item {% if page == current_page %}active{% endif %}">
-                                            <a class="page-link" href="{{ path('annonces', {page: page}) }}">{{ page }}</a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-
-                                {% if current_page < total_pages %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ path('annonces', {page: current_page + 1}) }}" aria-label="Suivant">
-                                            <span aria-hidden="true">&raquo;</span>
-                                            <span class="sr-only">Suivant</span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
                     </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <div class="row">
+                <div class="col-md-12">
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            {% if current_page > 1 %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ path('annonces', {page: current_page - 1}) }}" aria-label="Précédent">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Précédent</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for page in pages_to_show %}
+                                {% if page == '...' %}
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                {% else %}
+                                    <li class="page-item {% if page == current_page %}active{% endif %}">
+                                        <a class="page-link" href="{{ path('annonces', {page: page}) }}">{{ page }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if current_page < total_pages %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ path('annonces', {page: current_page + 1}) }}" aria-label="Suivant">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Suivant</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
