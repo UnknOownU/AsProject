@@ -160,6 +160,15 @@
     }
 
     @media (max-width: 768px) {
+        .car-wrap .img {
+            height: auto;
+            padding-top: 56.25%; /* Pour maintenir le ratio 16:9 */
+        }
+        
+        .car-wrap .img img {
+            object-fit: cover;
+        }
+
         .price-card {
             order: -1;
             margin-bottom: 20px;
