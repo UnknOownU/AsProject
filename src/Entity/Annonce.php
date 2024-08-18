@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Image;
+use App\Entity\Option;
 use App\Repository\AnnonceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -80,9 +81,13 @@ class Annonce
     #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Image::class, cascade: ['persist', 'remove'])]
     private Collection $images;
 
+    #[ORM\ManyToMany(targetEntity: Option::class, mappedBy: 'annonces')]
+    private Collection $options;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->options = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -355,6 +360,33 @@ class Annonce
             if ($image->getAnnonce() === $this) {
                 $image->setAnnonce(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Option>
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): static
+    {
+        if (!$this->options->contains($option)) {
+            $this->options->add($option);
+            $option->addAnnonce($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): static
+    {
+        if ($this->options->removeElement($option)) {
+            $option->removeAnnonce($this);
         }
 
         return $this;
