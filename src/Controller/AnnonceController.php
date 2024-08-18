@@ -75,12 +75,16 @@ class AnnonceController extends AbstractController
                 $images[] = base64_encode($imageData);
             }
         }
-
+    
+        $options = $annonce->getOptions(); // Récupérer les options associées à l'annonce
+    
         return $this->render('annonce/show.html.twig', [
             'annonce' => $annonce,
             'images' => $images,
+            'options' => $options, // Passer les options à la vue
         ]);
     }
+    
 
     private function getPagesToShow(int $currentPage, int $totalPages): array
     {

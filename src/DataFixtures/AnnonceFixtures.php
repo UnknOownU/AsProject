@@ -1,8 +1,10 @@
 <?php
+
 namespace App\DataFixtures;
 
 use App\Entity\Annonce;
 use App\Entity\Image;
+use App\Entity\Option;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -12,6 +14,30 @@ class AnnonceFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
+
+        // Options disponibles
+        $optionNames = [
+            'Climatisation', 
+            'GPS', 
+            'Sièges chauffants', 
+            'Bluetooth', 
+            'Caméra de recul', 
+            'Radar de stationnement', 
+            'Toit ouvrant', 
+            'Régulateur de vitesse', 
+            'Vitres teintées',
+            'Système de navigation'
+        ];
+
+        $options = [];
+        foreach ($optionNames as $optionName) {
+            $option = new Option();
+            $option->setName($optionName);
+            $manager->persist($option);
+            $options[] = $option;
+        }
+
+        $manager->flush();
 
         // Liste des marques et descriptions pour générer les données
         $brands = [
@@ -81,20 +107,24 @@ class AnnonceFixtures extends Fixture
                     ->setHorsePower($enginePower)
                     ->setPrice($price);
 
+            // Ajouter des options aléatoires à l'annonce
+            $selectedOptions = (array)array_rand($options, rand(1, 4));
+            foreach ($selectedOptions as $optionIndex) {
+                $annonce->addOption($options[$optionIndex]);
+            }
+
             // Générer plusieurs images pour chaque annonce
             for ($j = 1; $j <= 3; $j++) { 
                 $image = new Image();
                 $imageFileIndex = rand(1, 12); // Sélectionner une image aléatoire entre car-1.jpg et car-12.jpg
                 
-                // Vérifier si le fichier existe
                 $filePath = __DIR__ . "/../../public/images/car-$imageFileIndex.jpg";
                 if (file_exists($filePath)) {
                     $imageData = file_get_contents($filePath);
-                    $image->setData($imageData); // Stocker directement les données binaires
+                    $image->setData($imageData);
                     $image->setAnnonce($annonce);
                     $manager->persist($image);
                 } else {
-                    // Gérer le cas où le fichier n'existe pas
                     echo "Le fichier $filePath n'existe pas.\n";
                 }
             }

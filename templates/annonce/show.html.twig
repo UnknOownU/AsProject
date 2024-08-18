@@ -29,15 +29,15 @@
         border-radius: 8px;
         border: 1px solid #444;
         margin-bottom: 20px;
-        position: relative; /* Important pour positionner les boutons correctement */
+        position: relative;
+        cursor: pointer;
     }
 
-    /* Boutons de navigation pour les images */
     .nav-button {
         position: absolute;
-        top: 50%;  /* Positionnement vertical centré */
+        top: 50%; 
         transform: translateY(-50%);
-        background-color: rgba(0, 0, 0, 0.8); /* Noir avec transparence */
+        background-color: rgba(0, 0, 0, 0.8); 
         color: #fff;
         border: none;
         padding: 10px;
@@ -48,11 +48,11 @@
     }
 
     .nav-button.left {
-        left: 15px; /* Ajuster pour bien coller au bord gauche */
+        left: 15px;
     }
 
     .nav-button.right {
-        right: 15px; /* Ajuster pour bien coller au bord droit */
+        right: 15px;
     }
 
     .thumbnails {
@@ -123,7 +123,7 @@
         color: #e3c00e;
     }
 
-    .location-card, .characteristics-card {
+    .location-card, .characteristics-card, .options-card {
         background-color: #2b2b2b;
         border: 1px solid #333;
         border-radius: 8px;
@@ -132,7 +132,7 @@
         margin-bottom: 20px;
     }
 
-    .location-card .card-header, .characteristics-card .card-header {
+    .location-card .card-header, .characteristics-card .card-header, .options-card .card-header {
         background-color: #333;
         border-bottom: 1px solid #444;
         font-weight: bold;
@@ -159,24 +159,9 @@
         text-align: center;
     }
 
-    @media (max-width: 768px) {
-        .car-wrap .img {
-            height: auto;
-            padding-top: 56.25%; /* Pour maintenir le ratio 16:9 */
-        }
-        
-        .car-wrap .img img {
-            object-fit: cover;
-        }
-
-        .price-card {
-            order: -1;
-            margin-bottom: 20px;
-        }
-
-        .car-wrap {
-            margin-top: 20px;
-        }
+    .modal-content {
+        background: transparent;
+        border: none;
     }
 </style>
 
@@ -191,21 +176,30 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="car-wrap">
-                    <div id="main-image" class="img rounded d-flex align-items-end" style="background-image: url('{{ images[0] ? 'data:image/jpeg;base64,' ~ images[0] : asset('images/default_car_image.jpg') }}');">
-                        <!-- Boutons de navigation Bootstrap -->
-                        <button class="btn btn-dark nav-button left" onclick="previousImage()">
+                    <div id="main-image" class="img rounded d-flex align-items-end" style="background-image: url('{{ images[0] ? 'data:image/jpeg;base64,' ~ images[0] : asset('images/default_car_image.jpg') }}');" onclick="openLightbox(event)">
+                        <button class="btn btn-dark nav-button left" onclick="previousImage(event)">
                             <i class="fas fa-chevron-left"></i>
-                        </button> <!-- Bouton précédent -->
-                        <button class="btn btn-dark nav-button right" onclick="nextImage()">
+                        </button>
+                        <button class="btn btn-dark nav-button right" onclick="nextImage(event)">
                             <i class="fas fa-chevron-right"></i>
-                        </button> <!-- Bouton suivant -->
+                        </button>
                     </div>
 
                     <div class="thumbnails">
                         {% for image in images %}
-                            <div class="thumbnail" style="background-image: url('data:image/jpeg;base64,{{ image }}');" onclick="setMainImage({{ loop.index0 }})" id="thumb-{{ loop.index0 }}">
+                            <div class="thumbnail" style="background-image: url('data:image/jpeg;base64,{{ image }}');" onclick="setMainImage({{ loop.index0 }});" id="thumb-{{ loop.index0 }}">
                             </div>
                         {% endfor %}
+                    </div>
+
+                    <!-- Card pour le prix, affichée uniquement sur mobile -->
+                    <div class="price-card mb-4 d-md-none">
+                        <div class="price">
+                            {{ annonce.price | number_format(0, ',', ' ') }} €
+                        </div>
+                        <a href="tel:0612345678" class="phone-number">
+                            <i class="fas fa-phone-alt"></i> 06 12 34 56 78
+                        </a>
                     </div>
 
                     <div class="card characteristics-card">
@@ -214,11 +208,11 @@
                         </div>
                         <div class="card-body">
                             <ul class="list-unstyled">
-                                <li><strong>Marque :</strong> {{ annonce.brand }}</li>
-                                <li><strong>Modèle :</strong> {{ annonce.carname }}</li>
-                                <li><strong>Année :</strong> {{ annonce.year }}</li>
-                                <li><strong>Kilométrage :</strong> {{ annonce.kilometrage }} km</li>
-                                <li><strong>Provenance :</strong> {{ annonce.provenance }}</li>
+                                <li><strong><i class="fas fa-car"></i> Marque :</strong> {{ annonce.brand }}</li>
+                                <li><strong><i class="fas fa-car-side"></i> Modèle :</strong> {{ annonce.carname }}</li>
+                                <li><strong><i class="fas fa-calendar-alt"></i> Année :</strong> {{ annonce.year }}</li>
+                                <li><strong><i class="fas fa-tachometer-alt"></i> Kilométrage :</strong> {{ annonce.kilometrage }} km</li>
+                                <li><strong><i class="fas fa-map-marker-alt"></i> Provenance :</strong> {{ annonce.provenance }}</li>
                             </ul>
                         </div>
                     </div>
@@ -228,11 +222,11 @@
                         </div>
                         <div class="card-body">
                             <ul class="list-unstyled">
-                                <li><strong>Boîte de vitesse :</strong> {{ annonce.gearbox }}</li>
-                                <li><strong>Énergie :</strong> {{ annonce.fuel }}</li>
-                                <li><strong>Puissance fiscale :</strong> {{ annonce.fiscalPower }} CV</li>
-                                <li><strong>Puissance DIN :</strong> {{ annonce.horsePower }} ch</li>
-                                <li><strong>Consommation :</strong>
+                                <li><strong><i class="fas fa-cogs"></i> Boîte de vitesse :</strong> {{ annonce.gearbox }}</li>
+                                <li><strong><i class="fas fa-gas-pump"></i> Énergie :</strong> {{ annonce.fuel }}</li>
+                                <li><strong><i class="fas fa-horse-head"></i> Puissance fiscale :</strong> {{ annonce.fiscalPower }} CV</li>
+                                <li><strong><i class="fas fa-horse"></i> Puissance DIN :</strong> {{ annonce.horsePower }} ch</li>
+                                <li><strong><i class="fas fa-gas-pump"></i> Consommation :</strong>
                                     {% if annonce.gearbox == 'Automatique' %}
                                         {{ annonce.fuelConsumption }} kWh/100km
                                     {% else %}
@@ -248,27 +242,34 @@
                         </div>
                         <div class="card-body">
                             <ul class="list-unstyled">
-                                <li><strong>Nombre de portes :</strong> {{ annonce.doors }}</li>
-                                <li><strong>Nombre de sièges :</strong> {{ annonce.seats }}</li>
-                                <li><strong>Couleur :</strong> {{ annonce.color }}</strong></li>
+                                <li><strong><i class="fas fa-door-open"></i> Nombre de portes :</strong> {{ annonce.doors }}</li>
+                                <li><strong><i class="fas fa-chair"></i> Nombre de sièges :</strong> {{ annonce.seats }}</li>
+                                <li><strong><i class="fas fa-palette"></i> Couleur :</strong> {{ annonce.color }}</strong></li>
                             </ul>
                         </div>
                     </div>
-                    <div class="card characteristics-card">
+
+                    <!-- Ajout de la card pour les options -->
+                    <div class="card options-card">
                         <div class="card-header">
-                            <i class="fas fa-check-circle"></i> État
+                            <i class="fas fa-list-alt"></i> Options
                         </div>
                         <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li><strong>Contrôle technique :</strong> {{ annonce.technicalControl }}</li>
-                                <li><strong>Date d'enregistrement :</strong> {{ annonce.registrationDate|date('d/m/Y') }}</li>
-                                <li><strong>Première main :</strong> {{ annonce.firstHand ? 'Oui' : 'Non' }}</li>
-                            </ul>
+                            {% if annonce.options is not empty %}
+                                <ul class="list-unstyled">
+                                    {% for option in annonce.options %}
+                                        <li><strong><i class="fas fa-check"></i> {{ option.name }}</strong></li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p><i class="fas fa-exclamation-circle"></i> Aucune option spécifiée pour cette voiture.</p>
+                            {% endif %}
                         </div>
                     </div>
+
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4 d-none d-md-block">
                 <div class="details-section">
                     <!-- Card pour le prix et le numéro de téléphone -->
                     <div class="price-card mb-4">
@@ -306,6 +307,36 @@
     </div>
 </section>
 
+<!-- Lightbox Modal -->
+<div class="modal fade" id="lightboxModal" tabindex="-1" aria-labelledby="lightboxModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="lightboxCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for image in images %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <img src="data:image/jpeg;base64,{{ image }}" class="d-block w-100 rounded" alt="Image {{ loop.index }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let currentIndex = 0;
     const images = {{ images|json_encode|raw }};
@@ -316,12 +347,14 @@
         updateThumbnails(index);
     }
 
-    function previousImage() {
+    function previousImage(event) {
+        event.stopPropagation();
         currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
         updateImage(currentIndex);
     }
 
-    function nextImage() {
+    function nextImage(event) {
+        event.stopPropagation();
         currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
         updateImage(currentIndex);
     }
@@ -342,7 +375,15 @@
         });
     }
 
-    // Initialiser la première miniature comme active
+    function openLightbox(event) {
+        if (event.target.closest('.nav-button')) return;
+        
+        const lightboxModal = new bootstrap.Modal(document.getElementById('lightboxModal'));
+        const lightboxCarousel = new bootstrap.Carousel(document.getElementById('lightboxCarousel'));
+        lightboxCarousel.to(currentIndex);
+        lightboxModal.show();
+    }
+
     updateThumbnails(0);
 </script>
 
