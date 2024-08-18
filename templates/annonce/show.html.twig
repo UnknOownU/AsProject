@@ -289,15 +289,17 @@
                         <div class="card-body">
                             <div id="map"></div>
                             <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    var map = L.map('map').setView([48.8566, 2.3522], 13); // Paris coordinates
-                                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                    }).addTo(map);
-                                    L.marker([48.8566, 2.3522]).addTo(map)
-                                        .bindPopup('Localisation de la voiture')
-                                        .openPopup();
-                                });
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var map = L.map('map').setView([50.7022472, 3.1937215], 13);
+                                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                                }).addTo(map);
+                            
+                                L.marker([50.7022472, 3.1937215]).addTo(map)
+                                    .bindPopup('<strong>AS SERVICE</strong><br>156/1 Rue de Cartigny')
+                                    .openPopup();
+                            });
+
                             </script>
                         </div>
                     </div>
