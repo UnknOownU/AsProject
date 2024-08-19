@@ -17,13 +17,17 @@
 
     <!-- Leaflet CSS for map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Custom CSS -->
-    <style>
+      <style>
         /* Fond noir global */
         body {
-            background-color: #000000;
-            color: #FFFFFF;
+            background-color: #1c1c1c; /* Noir foncé */
+            color: #e5e5e5; /* Gris clair */
+            font-family: 'Roboto', sans-serif;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -31,16 +35,17 @@
 
         /* Liens pour s'assurer qu'ils sont visibles sur fond noir */
         a {
-            color: #FFD700; /* Or */
+            color: #fca311; /* Orangé */
+            text-decoration: none;
         }
 
         a:hover {
-            color: #FFA500; /* Orange */
+            color: #e3c00e; /* Doré */
         }
 
         /* Ajustement des couleurs pour les cartes */
         .card {
-            background-color: #1c1c1c; /* Noir foncé */
+            background-color: #2b2b2b; /* Noir légèrement éclairci */
             border-color: #333333; /* Gris foncé */
         }
 
@@ -50,7 +55,7 @@
         }
 
         .card-body {
-            color: #FFFFFF;
+            color: #e5e5e5; /* Gris clair */
         }
 
         /* Ajustement de la navigation */
@@ -59,15 +64,15 @@
         }
 
         .navbar-brand span {
-            color: #FFD700; /* Or */
+            color: #FFD700; /* Jaune */
         }
 
         .nav-link {
-            color: #FFFFFF !important;
+            color: #e5e5e5 !important; /* Gris clair */
         }
 
         .nav-link.active {
-            color: #FFA500 !important; /* Orange pour le lien actif */
+            color: #fca311 !important; /* Orangé pour le lien actif */
         }
         
         /* Footer */
@@ -81,20 +86,20 @@
         }
 
         footer a {
-            color: #FFD700; /* Or */
+            color: #fca311; /* Orangé */
             text-decoration: none;
         }
 
         footer a:hover {
+            color: #FFD700; /* Jaune */
             text-decoration: underline;
         }
-
     </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
-        <a class="navbar-brand" href="{{ path('home') }}">AS<span style="color: gold;">GARAGE</span></a>
+        <a class="navbar-brand" href="{{ path('home') }}">AS<span style="color: gold;">SERVICES</span></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="oi oi-menu"></span> Menu
         </button>
@@ -104,7 +109,7 @@
                 <li class="nav-item"><a href="{{ path('home') }}" class="nav-link">Accueil</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">À propos</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">Services</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Tarifs</a></li>
+                <li class="nav-item"><a href="{{ path('app_technical_control_appointment_index') }}" class="nav-link">Conntrôle-technique</a></li>
                 <li class="nav-item active"><a href="{{ path('annonces') }}" class="nav-link">Voitures</a></li>
             </ul>
         </div>

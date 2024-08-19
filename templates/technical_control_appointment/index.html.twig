@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Services de Contrôle Technique{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Nos Services de Contrôle Technique</h1>
+    
+    <!-- Section de réassurance -->
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                <h4>Service de Qualité</h4>
+                <p>Nos contrôles techniques sont réalisés par des experts certifiés, assurant la sécurité et la conformité de votre véhicule.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                <h4>Rendez-vous Rapide</h4>
+                <p>Obtenez un rendez-vous en quelques clics et choisissez un créneau qui vous convient.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="fas fa-thumbs-up fa-3x text-primary mb-3"></i>
+                <h4>Satisfaction Garantie</h4>
+                <p>Nous nous engageons à fournir un service irréprochable, avec une satisfaction client garantie.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Liste des services -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Contrôle Technique Réglementaire</h5>
+                    <p class="card-text">Assurez-vous que votre véhicule respecte toutes les normes en vigueur. Ce contrôle est obligatoire et doit être réalisé tous les deux ans.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Contre-visite</h5>
+                    <p class="card-text">Si votre véhicule n'a pas passé le contrôle technique, une contre-visite est nécessaire pour vérifier les points en défaut.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Contrôle Antipollution</h5>
+                    <p class="card-text">Vérifiez que votre véhicule respecte les normes d'émissions polluantes. Indispensable pour les véhicules diesel ou GPL.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Contrôle Technique Volontaire</h5>
+                    <p class="card-text">Vous souhaitez vérifier l'état de votre véhicule en dehors des contrôles obligatoires ? Optez pour un contrôle technique volontaire.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Vérification des Points de Sécurité</h5>
+                    <p class="card-text">Assurez-vous que les principaux éléments de sécurité de votre véhicule sont en bon état : freins, pneus, éclairage, etc.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Diagnostic Écologique</h5>
+                    <p class="card-text">Découvrez l'empreinte écologique de votre véhicule et recevez des conseils pour améliorer son efficacité énergétique.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton unique pour prendre rendez-vous -->
+    <div class="text-center mt-5">
+        <a href="{{ path('app_technical_control_appointment_step', { 'step': 1 }) }}" class="btn btn-warning btn-lg text-black">Prendre rendez-vous</a>
+    </div>
+</div>
+{% endblock %}

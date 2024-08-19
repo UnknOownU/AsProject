@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Modification de votre rendez-vous</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c; /* Couleur de fond sombre */
+            color: silver; /* Texte en couleur argent */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #333; /* Couleur de fond du container */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #e3c00e; /* Couleur dorée pour le titre */
+        }
+        p {
+            line-height: 1.6;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background-color: #444; /* Couleur de fond pour les éléments de la liste */
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #999; /* Texte de la footer en gris clair */
+            font-size: 12px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .footer a {
+            color: #e3c00e; /* Couleur dorée pour les liens */
+            text-decoration: none;
+        }
+        .highlight {
+            color: #e3c00e; /* Couleur dorée pour les éléments importants */
+        }
+        .section-title {
+            margin-top: 20px;
+            color: silver; /* Couleur argentée pour les titres de section */
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .btn {
+            background-color: #e3c00e; /* Boutons dorés */
+            color: black;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Modification de votre rendez-vous</h1>
+        <p>Bonjour <span class="highlight">{{ appointment.firstname }} {{ appointment.lastname }}</span>,</p>
+
+        <p>Nous vous confirmons que votre rendez-vous pour le contrôle technique de votre véhicule a été modifié. Vous trouverez ci-dessous les détails de votre rendez-vous :</p>
+
+        <h2 class="section-title">Détails du rendez-vous</h2>
+        <ul>
+            <li>Nom complet : {{ appointment.firstname }} {{ appointment.lastname }}</li>
+            <li>Email : {{ appointment.email }}</li>
+            <li>Numéro de téléphone : {{ appointment.phone }}</li>
+            <li>Marque du véhicule : {{ appointment.carBrand }}</li>
+            <li>Modèle du véhicule : {{ appointment.carModel }}</li>
+            <li>Immatriculation : {{ appointment.licensePlate }}</li>
+            <li>Type de carburant : {{ appointment.fuelType }}</li>
+            <li>Type de contrôle technique : {{ appointment.controlType }}</li>
+            {% if appointment.comments %}
+                <li>Commentaires : {{ appointment.comments }}</li>
+            {% endif %}
+            <li class="highlight">Identifiant de réservation : {{ appointment.uuid }}</li>
+        </ul>
+
+        <p class="warning">Conservez cet identifiant de réservation pour modifier ou annuler votre rendez-vous dans un délai de 24 heures. Cliquez sur les liens ci-dessous pour effectuer ces actions :</p>
+
+        <p>
+            <a href="{{ url('app_technical_control_appointment_edit_step', { 'uuid': appointment.uuid, 'step': 1 }) }}" class="btn btn-primary">Modifier mon rendez-vous</a>
+        </p>
+        <a href="{{ url('app_technical_control_appointment_cancel', { 'uuid': appointment.uuid }) }}" 
+           class="btn btn-danger">
+            Annuler mon rendez-vous
+        </a>
+
+        <p>Nous vous remercions de votre confiance et restons à votre disposition pour toute question.</p>
+
+        <p>Cordialement,</p>
+        <p>L'équipe de votre centre de contrôle technique.</p>
+
+        <div class="footer">
+            <p>Pour toute question, contactez-nous à <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.</p>
+            <p>Centre de contrôle technique, 123 Rue Exemple, Ville, Pays</p>
+        </div>
+    </div>
+</body>
+</html>
