@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annulation de Rendez-vous{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="p-5 rounded shadow-sm" style="background-color: #333; color: silver;">
+        <h1 class="text-center mb-4 text-danger"><i class="fas fa-exclamation-triangle"></i> Annuler votre rendez-vous</h1>
+        <p class="text-center lead">Vous êtes sur le point d'annuler votre rendez-vous. <strong class="text-danger">Cette action est irréversible.</strong></p>
+    
+        <!-- Formulaire d'annulation avec confirmation par UUID -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-0" style="background-color: #444;">
+                    <div class="card-body">
+                        <form id="cancelForm" method="post" action="{{ path('app_technical_control_appointment_cancel', {'uuid': appointment.uuid}) }}" class="form-confirmation">
+                            <div class="form-group">
+                                <label for="uuidInput" class="font-weight-bold">Veuillez entrer votre identifiant de réservation pour confirmer l'annulation (en jaune sur l'email que vous avez reçu) :</label>
+                                <input type="text" id="uuidInput" name="uuid" class="form-control form-control-lg" placeholder="Entrez votre UUID ici" required>
+                            </div>
+                            <div id="error-message" class="text-danger mt-2" style="display: none;">
+                                <i class="fas fa-exclamation-circle"></i> L'identifiant de réservation saisi ne correspond pas. Veuillez réessayer.
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-danger btn-lg"><i class="fas fa-times-circle"></i> Confirmer l'annulation</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Bouton pour revenir sans annuler -->
+        <div class="text-center mt-4">
+            <a href="{{ path('app_technical_control_appointment_index') }}" class="btn btn-secondary btn-lg"><i class="fas fa-arrow-left"></i> Retour sans annuler</a>
+        </div>
+    </div>
+</div>
+
+<!-- Script JavaScript pour la validation de l'UUID et la gestion de SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('cancelForm').addEventListener('submit', function(event) {
+        const enteredUuid = document.getElementById('uuidInput').value.trim();
+        const expectedUuid = '{{ appointment.uuid }}';
+
+        if (enteredUuid !== expectedUuid) {
+            event.preventDefault(); // Empêche l'envoi du formulaire
+            document.getElementById('error-message').style.display = 'block'; // Affiche le message d'erreur
+        }
+    });
+
+    // Afficher une SweetAlert si l'annulation a réussi
+    {% if app.request.query.get('success') == 'true' %}
+        Swal.fire({
+            icon: 'success',
+            title: 'Rendez-vous annulé',
+            text: 'Votre rendez-vous a été annulé avec succès.',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{{ path('app_technical_control_appointment_index') }}';
+            }
+        });
+    {% endif %}
+</script>
+{% endblock %}
