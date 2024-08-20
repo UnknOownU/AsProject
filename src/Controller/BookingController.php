@@ -44,13 +44,27 @@ class BookingController extends AbstractController
     
         $timeslotsByDay = [];
         $hours = [];
+        $now = new \DateTime(); // Date et heure actuelles
     
         foreach ($allTimeslots as $timeslot) {
-            $day = $timeslot->getStartTime()->format('l'); // Récupère le jour complet (e.g., "Monday")
-            $hour = $timeslot->getStartTime()->format('H:i'); // Récupère l'heure (e.g., "08:00")
+            $day = $timeslot->getStartTime()->format('Y-m-d'); // Format uniforme pour les clés
+            $hour = $timeslot->getStartTime()->format('H:i');
+    
+            // Calculer la différence en heures
+            $hoursDifference = ($timeslot->getStartTime()->getTimestamp() - $now->getTimestamp()) / 3600;
+    
+            // Marquer les créneaux comme "overdue" s'ils sont dans moins de 24 heures
+            $isOverdue = $hoursDifference < 24;
     
             // Grouper les créneaux horaires par jour
-            $timeslotsByDay[$day][$hour] = $timeslot;
+            if (!isset($timeslotsByDay[$day])) {
+                $timeslotsByDay[$day] = [];
+            }
+    
+            $timeslotsByDay[$day][$hour] = [
+                'slot' => $timeslot,
+                'isOverdue' => $isOverdue
+            ];
     
             // Ajouter l'heure à la liste des heures disponibles si elle n'existe pas déjà
             if (!in_array($hour, $hours)) {
@@ -62,10 +76,14 @@ class BookingController extends AbstractController
         sort($hours);
     
         // Calcul des jours à afficher
-        $startDate = new DateTime(); // Date actuelle
+        $startDate = new \DateTime(); // Date actuelle
         $days = [];
         for ($i = 0; $i < 7; $i++) {
-            $days[] = $startDate->format('l d F'); // e.g., "Monday 20 August"
+            $dayDate = clone $startDate; // Clone pour ne pas modifier l'original
+            $days[] = [
+                'date' => $dayDate->format('Y-m-d'), // Utilisation du même format que les clés
+                'display' => $dayDate->format('l d F') // Format pour affichage
+            ];
             $startDate->modify('+1 day');
         }
     
@@ -101,7 +119,8 @@ class BookingController extends AbstractController
             'csrf_token' => $csrfToken, // Passe le token CSRF au template
         ]);
     }
-
+    
+    
     
     
     public function createTimeslots(\DateTimeInterface $startDate, \DateTimeInterface $endDate, int $slotDuration)
