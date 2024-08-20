@@ -107,10 +107,9 @@
             <td class="fw-bold">{{ hour }}</td>
             {% for day in days %}
                 {% set dayDate = day.date %}
-                {% if timeslotsByDay[dayDate] is defined %}
-                    {% set slotData = timeslotsByDay[dayDate][hour] %}
+                {% set slotData = timeslotsByDay[dayDate][hour] | default(null) %}
+                {% if slotData is not null %}
                     {% set slot = slotData.slot %}
-                    {% set isOverdue = slotData.isOverdue %}
                     <td class="text-center timeslot-cell
                         {% if slot %}
                             {% if slot.isAvailable %}
@@ -119,11 +118,7 @@
                                 bg-secondary text-light disabled
                             {% endif %}
                         {% else %}
-                            {% if isOverdue %}
-                                bg-dark text-danger disabled
-                            {% else %}
-                                bg-dark text-white disabled
-                            {% endif %}
+                            bg-dark text-white disabled
                         {% endif %}"
                         data-slot-id="{{ slot.id ?? '0' }}" data-slot-hour="{{ hour }}" data-slot-day="{{ dayDate }}">
                         {% if slot %}
@@ -135,11 +130,7 @@
                                 <span class="text-danger"><del>{{ slot.startTime.format('H:i') }} - {{ slot.endTime.format('H:i') }} (Réservé)</del></span>
                             {% endif %}
                         {% else %}
-                            {% if isOverdue %}
-                                <span class="text-danger">Prise de rendez-vous dépassée</span>
-                            {% else %}
-                                <span class="text-white">Indisponible</span>
-                            {% endif %}
+                            <span class="text-white">Indisponible</span>
                         {% endif %}
                     </td>
                 {% else %}

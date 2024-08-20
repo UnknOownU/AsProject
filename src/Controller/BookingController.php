@@ -35,35 +35,32 @@ class BookingController extends AbstractController
     {
         $booking = new Booking();
         $booking->setStatus('Créé');
+        
+        // Récupérer tous les créneaux horaires disponibles
+        $allTimeslots = $entityManager->getRepository(Timeslot::class)->findBy([], ['startTime' => 'ASC']);
     
-        // Récupérer tous les créneaux horaires disponibles, triés par heure de début
-        $allTimeslots = $entityManager->getRepository(Timeslot::class)->findBy(
-            [],
-            ['startTime' => 'ASC']
-        );
+        $now = new \DateTime(); // Date et heure actuelles
+    
+        // Filtrer les créneaux horaires pour exclure ceux dans moins de 12 heures
+        $filteredTimeslots = array_filter($allTimeslots, function($timeslot) use ($now) {
+            return ($timeslot->getStartTime()->getTimestamp() - $now->getTimestamp()) >= 43200; // 43200 secondes = 12 heures
+        });
     
         $timeslotsByDay = [];
         $hours = [];
-        $now = new \DateTime(); // Date et heure actuelles
+        $days = [];
     
-        foreach ($allTimeslots as $timeslot) {
+        foreach ($filteredTimeslots as $timeslot) {
             $day = $timeslot->getStartTime()->format('Y-m-d'); // Format uniforme pour les clés
             $hour = $timeslot->getStartTime()->format('H:i');
-    
-            // Calculer la différence en heures
-            $hoursDifference = ($timeslot->getStartTime()->getTimestamp() - $now->getTimestamp()) / 3600;
-    
-            // Marquer les créneaux comme "overdue" s'ils sont dans moins de 24 heures
-            $isOverdue = $hoursDifference < 24;
-    
+            
             // Grouper les créneaux horaires par jour
             if (!isset($timeslotsByDay[$day])) {
                 $timeslotsByDay[$day] = [];
             }
     
             $timeslotsByDay[$day][$hour] = [
-                'slot' => $timeslot,
-                'isOverdue' => $isOverdue
+                'slot' => $timeslot
             ];
     
             // Ajouter l'heure à la liste des heures disponibles si elle n'existe pas déjà
@@ -77,7 +74,6 @@ class BookingController extends AbstractController
     
         // Calcul des jours à afficher
         $startDate = new \DateTime(); // Date actuelle
-        $days = [];
         for ($i = 0; $i < 7; $i++) {
             $dayDate = clone $startDate; // Clone pour ne pas modifier l'original
             $days[] = [
@@ -86,7 +82,7 @@ class BookingController extends AbstractController
             ];
             $startDate->modify('+1 day');
         }
-    
+        
         // Générez un token CSRF pour la sécurité
         $csrfToken = $csrfTokenManager->getToken('create_timeslot')->getValue();
     
@@ -95,9 +91,19 @@ class BookingController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            $selectedTimeslotId = $request->request->get('timeslot');
+            // Récupérer l'ID du créneau horaire sélectionné
+            $selectedTimeslotId = $request->request->get('selectedSlotId');
+            
+            // Vérifier que l'ID est bien transmis
+            if (!$selectedTimeslotId) {
+                $this->addFlash('error', 'Aucun créneau horaire sélectionné.');
+                return $this->redirectToRoute('app_booking_new');
+            }
+    
+            // Récupérer le créneau à partir de l'ID
             $selectedTimeslot = $entityManager->getRepository(Timeslot::class)->find($selectedTimeslotId);
     
+            // Vérifier si le créneau est valide et disponible
             if ($selectedTimeslot && $selectedTimeslot->isAvailable()) {
                 $selectedTimeslot->setIsAvailable(false);
                 $booking->setTimeslot($selectedTimeslot);
@@ -113,34 +119,10 @@ class BookingController extends AbstractController
     
         return $this->render('booking/new/new.html.twig', [
             'form' => $form->createView(),
-            'timeslotsByDay' => $timeslotsByDay, // Passe les créneaux groupés par jour au template
-            'hours' => $hours, // Passe les heures disponibles au template
-            'days' => $days, // Passe les jours au template
-            'csrf_token' => $csrfToken, // Passe le token CSRF au template
+            'timeslotsByDay' => $timeslotsByDay,
+            'hours' => $hours,
+            'days' => $days,
+            'csrf_token' => $csrfToken,
         ]);
     }
-    
-    
-    
-    
-    public function createTimeslots(\DateTimeInterface $startDate, \DateTimeInterface $endDate, int $slotDuration)
-    {
-        $currentTime = clone $startDate;
-    
-        while ($currentTime < $endDate) {
-            $endTime = (clone $currentTime)->modify("+$slotDuration minutes");
-            
-            $timeslot = new Timeslot();
-            $timeslot->setStartTime($currentTime);
-            $timeslot->setEndTime($endTime);
-            $timeslot->setIsAvailable(true);
-    
-            $this->entityManager->persist($timeslot);
-            $currentTime = $endTime;
-        }
-    
-        $this->entityManager->flush();
-    }
-       
-    
 }
