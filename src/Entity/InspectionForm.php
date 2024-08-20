@@ -2,28 +2,28 @@
 
 namespace App\Entity;
 
-use App\Repository\TechnicalControlAppointmentRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\InspectionFormRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity(repositoryClass: TechnicalControlAppointmentRepository::class)]
-class TechnicalControlAppointment
+#[ORM\Entity(repositoryClass: InspectionFormRepository::class)]
+class InspectionForm
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?Uuid $uuid = null;
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTime $updatedAt = null;
 
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
-    
+
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
@@ -34,10 +34,10 @@ class TechnicalControlAppointment
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $carBrand = null;
+    private ?string $carModel = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $carModel = null;
+    private ?string $carBrand = null;
 
     #[ORM\Column(length: 255)]
     private ?string $licensePlate = null;
@@ -45,22 +45,20 @@ class TechnicalControlAppointment
     #[ORM\Column(length: 255)]
     private ?string $fuelType = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $comments = null;
-
     #[ORM\Column(length: 255)]
     private ?string $controlType = null;
-    
+
     #[ORM\Column(length: 255)]
     private ?string $carType = null;
 
+    #[ORM\OneToMany(mappedBy: 'inspectionForm', targetEntity: Booking::class, cascade: ['persist', 'remove'])]
+    private Collection $bookings;
 
     public function __construct()
     {
-        // Générer un UUID lors de la création de l'objet
-        $this->uuid = Uuid::v4();
-        // Initialiser la date de création à maintenant
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTime();
+        $this->bookings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -68,14 +66,20 @@ class TechnicalControlAppointment
         return $this->id;
     }
 
-    public function getUuid(): ?Uuid
-    {
-        return $this->uuid;
-    }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
     }
 
     public function getFirstname(): ?string
@@ -86,10 +90,9 @@ class TechnicalControlAppointment
     public function setFirstname(string $firstname): self
     {
         $this->firstname = $firstname;
-
         return $this;
     }
-    
+
     public function getLastname(): ?string
     {
         return $this->lastname;
@@ -98,7 +101,6 @@ class TechnicalControlAppointment
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
-
         return $this;
     }
 
@@ -110,7 +112,6 @@ class TechnicalControlAppointment
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -122,19 +123,6 @@ class TechnicalControlAppointment
     public function setPhone(string $phone): self
     {
         $this->phone = $phone;
-
-        return $this;
-    }
-
-    public function getCarBrand(): ?string
-    {
-        return $this->carBrand;
-    }
-
-    public function setCarBrand(string $carBrand): self
-    {
-        $this->carBrand = $carBrand;
-
         return $this;
     }
 
@@ -146,7 +134,17 @@ class TechnicalControlAppointment
     public function setCarModel(string $carModel): self
     {
         $this->carModel = $carModel;
+        return $this;
+    }
 
+    public function getCarBrand(): ?string
+    {
+        return $this->carBrand;
+    }
+
+    public function setCarBrand(string $carBrand): self
+    {
+        $this->carBrand = $carBrand;
         return $this;
     }
 
@@ -158,7 +156,6 @@ class TechnicalControlAppointment
     public function setLicensePlate(string $licensePlate): self
     {
         $this->licensePlate = $licensePlate;
-
         return $this;
     }
 
@@ -170,19 +167,6 @@ class TechnicalControlAppointment
     public function setFuelType(string $fuelType): self
     {
         $this->fuelType = $fuelType;
-
-        return $this;
-    }
-
-    public function getComments(): ?string
-    {
-        return $this->comments;
-    }
-
-    public function setComments(?string $comments): self
-    {
-        $this->comments = $comments;
-
         return $this;
     }
 
@@ -194,9 +178,9 @@ class TechnicalControlAppointment
     public function setControlType(string $controlType): self
     {
         $this->controlType = $controlType;
-
         return $this;
     }
+
     public function getCarType(): ?string
     {
         return $this->carType;
@@ -205,6 +189,35 @@ class TechnicalControlAppointment
     public function setCarType(string $carType): self
     {
         $this->carType = $carType;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setInspectionForm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getInspectionForm() === $this) {
+                $booking->setInspectionForm(null);
+            }
+        }
 
         return $this;
     }

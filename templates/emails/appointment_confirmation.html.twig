@@ -94,10 +94,10 @@
         <p class="warning">Conservez cet identifiant de réservation pour modifier ou annuler votre rendez-vous dans un délai de 24 heures. Cliquez sur les liens ci-dessous pour effectuer ces actions :</p>
 
         <p>
-            <a href="{{ url('app_technical_control_appointment_edit_step', { 'uuid': appointment.uuid, 'step': 1 }) }}" class="btn btn-primary">Modifier mon rendez-vous</a>
+            <a href="{{ url('home', { 'uuid': appointment.uuid, 'step': 1 }) }}" class="btn btn-primary">Modifier mon rendez-vous</a>
         </p>
 
-        <a href="{{ url('app_technical_control_appointment_cancel', { 'uuid': appointment.uuid }) }}" 
+        <a href="{{ url('home', { 'uuid': appointment.uuid }) }}" 
            class="btn btn-danger">
             Annuler mon rendez-vous
         </a>

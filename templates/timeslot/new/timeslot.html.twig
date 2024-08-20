@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sélectionnez un créneau horaire{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4 text-warning">Sélectionnez un créneau horaire</h1>
+    
+    <div class="card bg-dark text-light p-4 rounded">
+        <div class="table-responsive">
+            <table class="table table-bordered table-dark table-hover text-warning">
+<thead>
+    <tr>
+        <th scope="col">Heures</th>
+        {% for day, formattedDay in formattedDays %}
+            <th scope="col">{{ formattedDay }}</th>
+        {% endfor %}
+    </tr>
+</thead>
+<tbody>
+    {% for hour in hours %}
+        <tr>
+            <td class="fw-bold">{{ hour }}</td>
+            {% for day, formattedDay in formattedDays %}
+                {% set slot = timeslots[day][hour] %}
+                <td class="text-center 
+                    {% if slot and not slot.isAvailable() %}
+                        bg-secondary text-light
+                    {% elseif not slot %}
+                        bg-dark text-white
+                    {% else %}
+                        bg-dark text-warning
+                    {% endif %}">
+                    {% if slot %}
+                        {% if slot.isAvailable() %}
+                            <form method="post" action="{{ path('timeslot_select', {id: slot.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('create_timeslot') }}">
+                                <button type="submit" class="btn btn-outline-warning">
+                                    {{ slot.startTime|date('H:i') }} - {{ slot.endTime|date('H:i') }}
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="text-danger"><del>{{ slot.startTime|date('H:i') }} - {{ slot.endTime|date('H:i') }} (Réservé)</del></span>
+                        {% endif %}
+                    {% else %}
+                        <span class="text-white">Indisponible</span>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</tbody>
+
+
+    <div class="text-center mt-4">
+        <a href="{{ path('app_technical_control_appointment_index') }}" class="btn btn-secondary btn-lg">
+            <i class="fas fa-arrow-left"></i> Annuler mon rendez-vous
+        </a>
+    </div>
+</div>
+{% endblock %}
