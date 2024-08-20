@@ -19,17 +19,17 @@
     <div id="step1" class="step">
         <h2 class="text-center mb-4">Étape 1: Choisir le type de véhicule</h2>
         <div class="row justify-content-center">
-            <div class="col-md-3 mb-3">
+            <div class="col-md-4 mb-3">
                 {{ form_label(form.inspectionForm.carType) }}
                 {{ form_widget(form.inspectionForm.carType, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
                 {{ form_errors(form.inspectionForm.carType) }}
             </div>
-            <div class="col-md-3 mb-3">
+            <div class="col-md-4 mb-3">
                 {{ form_label(form.inspectionForm.fuelType) }}
                 {{ form_widget(form.inspectionForm.fuelType, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
                 {{ form_errors(form.inspectionForm.fuelType) }}
             </div>
-            <div class="col-md-3 mb-3">
+            <div class="col-md-4 mb-3">
                 {{ form_label(form.inspectionForm.controlType) }}
                 {{ form_widget(form.inspectionForm.controlType, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
                 {{ form_errors(form.inspectionForm.controlType) }}
@@ -88,64 +88,85 @@
 
     <!-- Étape 3: Sélectionner un créneau horaire -->
     <div id="step3" class="step" style="display: none;">
-        <h2 class="text-center mb-4">Étape 3: Sélectionner un créneau horaire</h2>
+<h1 class="text-center mb-4 text-warning">Sélectionnez un créneau horaire</h1>
+    
+    <div class="card bg-dark text-light p-4 rounded">
         <div class="table-responsive">
             <table class="table table-bordered table-dark table-hover text-warning">
-                <thead>
+<thead>
                     <tr>
                         <th scope="col">Heures</th>
                         {% for day in days %}
-                            <th class="text-center">{{ day }}</th>
+                            <th class="text-center">{{ day.display }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
-                <tbody>
-                    {% for hour in hours %}
-                        <tr>
-                            <td class="fw-bold">{{ hour }}</td>
-                            {% for day in days %}
-                                {% set slot = timeslotsByDay[day|slice(0,3)][hour] %}
-                                <td class="text-center 
-                                    {% if slot and not slot.isAvailable %}
-                                        bg-secondary text-light
-                                    {% elseif not slot %}
-                                        bg-dark text-white
-                                    {% else %}
-                                        bg-dark text-warning
-                                    {% endif %}">
-                                    {% if slot %}
-                                        {% if slot.isAvailable %}
-                                           <div class="form-check text-center">
-                                               <input type="radio" name="timeslot" id="timeslot_{{ slot.id }}" value="{{ slot.id }}" class="form-check-input">
-                                               <label for="timeslot_{{ slot.id }}" class="form-check-label">
-                                                   {{ slot.getStartTime().format('H:i') ~ ' - ' ~ slot.getEndTime().format('H:i') }}
-                                               </label>
-                                           </div>
-                                        {% else %}
-                                            <span class="text-danger"><del>{{ slot.getStartTime().format('H:i') }} - {{ slot.getEndTime().format('H:i') }} (Réservé)</del></span>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="text-white">Indisponible</span>
-                                    {% endif %}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
+<tbody>
+    {% for hour in hours %}
+        <tr>
+            <td class="fw-bold">{{ hour }}</td>
+            {% for day in days %}
+                {% set dayDate = day.date %}
+                {% if timeslotsByDay[dayDate] is defined %}
+                    {% set slotData = timeslotsByDay[dayDate][hour] %}
+                    {% set slot = slotData.slot %}
+                    {% set isOverdue = slotData.isOverdue %}
+                    <td class="text-center timeslot-cell
+                        {% if slot %}
+                            {% if slot.isAvailable %}
+                                bg-dark text-warning
+                            {% else %}
+                                bg-secondary text-light disabled
+                            {% endif %}
+                        {% else %}
+                            {% if isOverdue %}
+                                bg-dark text-danger disabled
+                            {% else %}
+                                bg-dark text-white disabled
+                            {% endif %}
+                        {% endif %}"
+                        data-slot-id="{{ slot.id ?? '0' }}" data-slot-hour="{{ hour }}" data-slot-day="{{ dayDate }}">
+                        {% if slot %}
+                            {% if slot.isAvailable %}
+                                <button type="button" class="btn btn-sm btn-warning timeslot-btn" data-slot-id="{{ slot.id }}">
+                                    {{ slot.startTime.format('H:i') ~ ' - ' ~ slot.endTime.format('H:i') }}
+                                </button>
+                            {% else %}
+                                <span class="text-danger"><del>{{ slot.startTime.format('H:i') }} - {{ slot.endTime.format('H:i') }} (Réservé)</del></span>
+                            {% endif %}
+                        {% else %}
+                            {% if isOverdue %}
+                                <span class="text-danger">Prise de rendez-vous dépassée</span>
+                            {% else %}
+                                <span class="text-white">Indisponible</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                {% else %}
+                    <td class="text-center bg-dark text-white disabled">Indisponible</td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</tbody>
+
+
             </table>
         </div>
+        <input type="hidden" id="selectedSlotId" name="selectedSlotId" value="">
         <div class="text-center mt-4">
             <button type="button" class="btn btn-secondary btn-lg" onclick="previousStep(2)">Précédent</button>
-            <button type="submit" class="btn btn-warning btn-lg">Réserver ce créneau</button>
+            <button type="submit" class="btn btn-warning btn-lg">Réserver</button>
         </div>
     </div>
 
-    {{ form_end(form, {'render_rest': true}) }}
+    {{ form_end(form) }}
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     let currentStep = 1;
+    let selectedSlotId = null;
 
     function showStep(step) {
         document.querySelectorAll('.step').forEach(function (el) {
@@ -199,6 +220,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    document.querySelectorAll('.timeslot-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.timeslot-btn').forEach(function (b) {
+                b.classList.remove('selected');
+            });
+            btn.classList.add('selected');
+            selectedSlotId = btn.getAttribute('data-slot-id');
+            document.getElementById('selectedSlotId').value = selectedSlotId;
+        });
+    });
+
     window.nextStep = function (step) {
         currentStep = step;
         showStep(step);
@@ -215,13 +247,36 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <style>
+.timeslot-cell {
+    cursor: pointer;
+    border-radius: 10px; /* Bords arrondis */
+    overflow: hidden;
+}
+
+.timeslot-btn {
+    background-color: #FFD700; /* Jaune doux */
+    color: #343a40; /* Texte sombre pour le contraste */
+    border-radius: 8px; /* Bords arrondis des boutons */
+    border: none; /* Retire la bordure par défaut */
+    padding: 8px 12px; /* Ajoute un peu de padding pour rendre les boutons plus confortables */
+    transition: background-color 0.3s, transform 0.2s; /* Animation pour les interactions */
+}
+
+.timeslot-btn:hover {
+    background-color: #FFC300; /* Couleur légèrement plus sombre au survol */
+    transform: scale(1.05); /* Léger agrandissement au survol */
+}
+
 .timeslot-btn.selected {
-    background-color: #28a745;
+    background-color: #28a745; /* Vert pour les créneaux sélectionnés */
     color: white;
 }
-.table-timeslots {
-    width: 100%;
-    margin-top: 20px;
+
+.timeslot-cell.disabled {
+    cursor: not-allowed;
+    background-color: #343a40 !important; /* Gris foncé */
+    color: #a8a8a8 !important; /* Gris clair */
+    border-radius: 10px; /* Garde les bords arrondis pour les cellules désactivées */
 }
 
 .table-timeslots th {
@@ -229,12 +284,24 @@ document.addEventListener('DOMContentLoaded', function () {
     background-color: #343a40;
     color: white;
     padding: 10px;
+    border-radius: 10px 10px 0 0; /* Bords arrondis en haut */
 }
 
 .table-timeslots td {
     text-align: center;
     padding: 10px;
     vertical-align: top;
+    border-radius: 0 0 10px 10px; /* Bords arrondis en bas */
+}
+
+.table-timeslots .bg-dark {
+    cursor: not-allowed;
+    border-radius: 10px;
+}
+
+.table-timeslots .bg-secondary {
+    cursor: not-allowed;
+    border-radius: 10px;
 }
 
 .form-check {
@@ -242,5 +309,6 @@ document.addEventListener('DOMContentLoaded', function () {
     justify-content: center;
     align-items: center;
 }
+
 </style>
 {% endblock %}
