@@ -16,7 +16,7 @@
                         <form id="cancelForm" method="post" action="{{ path('app_technical_control_appointment_cancel', {'uuid': appointment.uuid}) }}" class="form-confirmation">
                             <div class="form-group">
                                 <label for="uuidInput" class="font-weight-bold">Veuillez entrer votre identifiant de réservation pour confirmer l'annulation (en jaune sur l'email que vous avez reçu) :</label>
-                                <input type="text" id="uuidInput" name="uuid" class="form-control form-control-lg" placeholder="Entrez votre UUID ici" required>
+                                <input type="text" id="uuidInput" name="uuid" class="form-control form-control-lg" placeholder="Entrez votre identifiant de réservation ici" required>
                             </div>
                             <div id="error-message" class="text-danger mt-2" style="display: none;">
                                 <i class="fas fa-exclamation-circle"></i> L'identifiant de réservation saisi ne correspond pas. Veuillez réessayer.
