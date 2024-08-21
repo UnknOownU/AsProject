@@ -31,17 +31,15 @@ class MailerService
         $this->mailer->send($email);
     }
     
-    public function sendAppointmentModification(string $toEmail, TechnicalControlAppointment $appointment): void
+    public function sendAppointmentModification(string $to, Booking $booking): void
     {
-        $htmlContent = $this->twig->render('emails/appointment_edit_confirmation.html.twig', [
-            'appointment' => $appointment
-        ]);
-
         $email = (new Email())
             ->from('no-reply@yourdomain.com')
-            ->to($toEmail)
+            ->to($to)
             ->subject('Modification de votre rendez-vous')
-            ->html($htmlContent);
+            ->html($this->twig->render('emails/appointment_edit_confirmation.html.twig', [
+                'booking' => $booking
+            ]));
 
         $this->mailer->send($email);
     }

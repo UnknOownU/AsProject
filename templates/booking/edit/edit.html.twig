@@ -1,0 +1,406 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier votre rendez-vous{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Modifier votre rendez-vous</h1>
+
+    {{ form_start(form, {'attr': {'id': 'appointmentForm'}}) }}
+
+    <!-- Affichage des erreurs de formulaire globales -->
+    {% if form_errors(form) %}
+        <div class="alert alert-danger">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
+
+    <!-- Étape 1: Choisir le type de véhicule -->
+    <div id="step1" class="step">
+        <h2 class="text-center mb-4">Étape 1: Choisir le type de véhicule</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-3">
+                {{ form_label(form.inspectionForm.carType) }}
+                {{ form_widget(form.inspectionForm.carType, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.carType) }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form_label(form.inspectionForm.fuelType) }}
+                {{ form_widget(form.inspectionForm.fuelType, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.fuelType) }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form_label(form.inspectionForm.controlType) }}
+                {{ form_widget(form.inspectionForm.controlType, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.controlType) }}
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-warning btn-lg" id="step1NextButton">Suivant</button>
+        </div>
+    </div>
+
+    <!-- Étape 2: Informations personnelles -->
+    <div id="step2" class="step" style="display: none;">
+        <h2 class="text-center mb-4">Étape 2: Informations personnelles</h2>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.inspectionForm.firstname) }}
+                {{ form_widget(form.inspectionForm.firstname, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.firstname) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.inspectionForm.lastname) }}
+                {{ form_widget(form.inspectionForm.lastname, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.lastname) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.inspectionForm.email) }}
+                {{ form_widget(form.inspectionForm.email, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.email) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.inspectionForm.phone) }}
+                {{ form_widget(form.inspectionForm.phone, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.phone) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.inspectionForm.carBrand) }}
+                {{ form_widget(form.inspectionForm.carBrand, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.carBrand) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.inspectionForm.carModel) }}
+                {{ form_widget(form.inspectionForm.carModel, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.carModel) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.inspectionForm.licensePlate) }}
+                {{ form_widget(form.inspectionForm.licensePlate, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(form.inspectionForm.licensePlate) }}
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-secondary btn-lg" onclick="previousStep(1)">Précédent</button>
+            <button type="button" class="btn btn-warning btn-lg" id="step2NextButton">Suivant</button>
+        </div>
+    </div>
+
+    <!-- Étape 3: Sélectionner un créneau horaire -->
+    <div id="step3" class="step" style="display: none;">
+        <h1 class="text-center mb-4 text-warning">Sélectionnez un créneau horaire</h1>
+    
+        <div class="card bg-dark text-light p-4 rounded">
+            <div class="table-responsive">
+                <table class="table table-bordered table-dark table-hover text-warning">
+                    <thead>
+                        <tr>
+                            <th scope="col">Heures</th>
+                            {% for day in days %}
+                                <th class="text-center">{{ day.display }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hour in hours %}
+                            <tr>
+                                <td class="fw-bold">{{ hour }}</td>
+                                {% for day in days %}
+                                    {% set dayDate = day.date %}
+                                    {% set slotData = timeslotsByDay[dayDate][hour] | default(null) %}
+                                    {% if slotData is not null %}
+                                        {% set slot = slotData.slot %}
+                                        <td class="text-center timeslot-cell
+                                            {% if slot %}
+                                                {% if slot.isAvailable %}
+                                                    bg-dark text-warning
+                                                {% else %}
+                                                    bg-secondary text-light disabled
+                                                {% endif %}
+                                            {% else %}
+                                                bg-dark text-white disabled
+                                            {% endif %}"
+                                            data-slot-id="{{ slot.id ?? '0' }}" data-slot-hour="{{ hour }}" data-slot-day="{{ dayDate }}">
+                                            {% if slot %}
+                                                {% if slot.isAvailable %}
+                                                    <button type="button" class="btn btn-sm btn-warning timeslot-btn" data-slot-id="{{ slot.id }}">
+                                                        {{ slot.startTime.format('H:i') ~ ' - ' ~ slot.endTime.format('H:i') }}
+                                                    </button>
+                                                {% else %}
+                                                    <span class="text-danger"><del>{{ slot.startTime.format('H:i') }} - {{ slot.endTime.format('H:i') }} (Réservé)</del></span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-white">Indisponible</span>
+                                            {% endif %}
+                                        </td>
+                                    {% else %}
+                                        <td class="text-center bg-dark text-white disabled">Indisponible</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <input type="hidden" id="selectedSlotId" name="selectedSlotId" value="">
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-secondary btn-lg" onclick="previousStep(2)">Précédent</button>
+                <button type="button" class="btn btn-warning btn-lg" id="step3NextButton">Suivant</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Étape 4: Confirmation -->
+    <div id="step4" class="step" style="display: none;">
+        <h2 class="text-center mb-4">Confirmation de la modification</h2>
+        <div class="card bg-dark text-light p-4 rounded">
+            <h4 class="mb-3">Récapitulatif :</h4>
+            <ul class="list-group">
+                <li class="list-group-item bg-dark text-white"><strong>Type de véhicule:</strong> <span id="recapCarType"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Type de carburant:</strong> <span id="recapFuelType"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Type de contrôle:</strong> <span id="recapControlType"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Nom:</strong> <span id="recapLastname"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Prénom:</strong> <span id="recapFirstname"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Email:</strong> <span id="recapEmail"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Téléphone:</strong> <span id="recapPhone"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Marque du véhicule:</strong> <span id="recapCarBrand"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Modèle du véhicule:</strong> <span id="recapCarModel"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Immatriculation:</strong> <span id="recapLicensePlate"></span></li>
+                <li class="list-group-item bg-dark text-white"><strong>Créneau horaire:</strong> <span id="recapTimeslot"></span></li>
+            </ul>
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-secondary btn-lg" onclick="previousStep(3)">Modifier</button>
+                <button type="submit" class="btn btn-warning btn-lg">Confirmer la modification</button>
+            </div>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let currentStep = 1;
+    let selectedSlotId = null;
+
+    function showStep(step) {
+        document.querySelectorAll('.step').forEach(function (el) {
+            el.style.display = 'none';
+        });
+        const stepElement = document.getElementById('step' + step);
+        if (stepElement) {
+            stepElement.style.display = 'block';
+        }
+    }
+
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    function validatePhone(phone) {
+        const re = /^\+?\d{10,15}$/;
+        return re.test(String(phone));
+    }
+
+    function validateStep1() {
+        const step1Fields = document.querySelectorAll('#step1 .form-select');
+        let valid = true;
+
+        step1Fields.forEach(function (field) {
+            if (!field.value) {
+                valid = false;
+            }
+        });
+
+        return valid;
+    }
+
+    function validateStep2() {
+        const step2Fields = document.querySelectorAll('#step2 .form-control');
+        let valid = true;
+
+        step2Fields.forEach(function (field) {
+            if (!field.value.trim()) {
+                valid = false;
+            }
+        });
+
+        const emailField = document.getElementById('booking_inspectionForm_email');
+        const phoneField = document.getElementById('booking_inspectionForm_phone');
+
+        if (!validateEmail(emailField.value)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur de validation',
+                text: 'Veuillez entrer une adresse email valide.',
+            });
+            valid = false;
+        }
+
+        if (!validatePhone(phoneField.value)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur de validation',
+                text: 'Veuillez entrer un numéro de téléphone valide.',
+            });
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    function saveStep3() {
+        if (selectedSlotId) {
+            document.getElementById('selectedSlotId').value = selectedSlotId;
+            return true;
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Créneau horaire manquant',
+                text: 'Veuillez sélectionner un créneau horaire avant de passer à l\'étape suivante.',
+            });
+            return false;
+        }
+    }
+
+    document.getElementById('step1NextButton').addEventListener('click', function () {
+        if (validateStep1()) {
+            nextStep(2);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Champs manquants',
+                text: 'Veuillez remplir tous les champs avant de passer à l\'étape suivante.',
+            });
+        }
+    });
+
+    document.getElementById('step2NextButton').addEventListener('click', function () {
+        if (validateStep2()) {
+            nextStep(3);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Champs manquants ou invalides',
+                text: 'Veuillez remplir tous les champs et vérifier les erreurs avant de passer à l\'étape suivante.',
+            });
+        }
+    });
+
+    document.getElementById('step3NextButton').addEventListener('click', function () {
+        if (saveStep3()) {
+            // Afficher le récapitulatif
+            document.getElementById('recapCarType').textContent = document.getElementById('booking_inspectionForm_carType').value;
+            document.getElementById('recapFuelType').textContent = document.getElementById('booking_inspectionForm_fuelType').value;
+            document.getElementById('recapControlType').textContent = document.getElementById('booking_inspectionForm_controlType').value;
+            document.getElementById('recapLastname').textContent = document.getElementById('booking_inspectionForm_lastname').value;
+            document.getElementById('recapFirstname').textContent = document.getElementById('booking_inspectionForm_firstname').value;
+            document.getElementById('recapEmail').textContent = document.getElementById('booking_inspectionForm_email').value;
+            document.getElementById('recapPhone').textContent = document.getElementById('booking_inspectionForm_phone').value;
+            document.getElementById('recapCarBrand').textContent = document.getElementById('booking_inspectionForm_carBrand').value;
+            document.getElementById('recapCarModel').textContent = document.getElementById('booking_inspectionForm_carModel').value;
+            document.getElementById('recapLicensePlate').textContent = document.getElementById('booking_inspectionForm_licensePlate').value;
+            document.getElementById('recapTimeslot').textContent = document.querySelector('.timeslot-btn.selected').textContent.trim();
+
+            nextStep(4);
+        }
+    });
+
+    document.querySelectorAll('.timeslot-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.timeslot-btn').forEach(function (b) {
+                b.classList.remove('selected');
+            });
+            btn.classList.add('selected');
+            selectedSlotId = btn.getAttribute('data-slot-id');
+        });
+    });
+
+    document.querySelector('.btn-warning[type="submit"]').addEventListener('click', function () {
+        // Nettoyer le localStorage après confirmation, bien que non utilisé dans cette version
+        // localStorage.clear();  // Vous pouvez commenter ou supprimer cette ligne
+    });
+
+    window.nextStep = function (step) {
+        currentStep = step;
+        showStep(step);
+    };
+
+    window.previousStep = function (step) {
+        currentStep = step;
+        showStep(step);
+    };
+
+    // Afficher la première étape initialement
+    showStep(1);
+});
+
+</script>
+
+<style>
+.timeslot-cell {
+    cursor: pointer;
+    border-radius: 10px; /* Bords arrondis */
+    overflow: hidden;
+}
+
+.timeslot-btn {
+    background-color: #FFD700; /* Jaune doux */
+    color: #343a40; /* Texte sombre pour le contraste */
+    border-radius: 8px; /* Bords arrondis des boutons */
+    border: none; /* Retire la bordure par défaut */
+    padding: 8px 12px; /* Ajoute un peu de padding pour rendre les boutons plus confortables */
+    transition: background-color 0.3s, transform 0.2s; /* Animation pour les interactions */
+}
+
+.timeslot-btn:hover {
+    background-color: #FFC300; /* Couleur légèrement plus sombre au survol */
+    transform: scale(1.05); /* Léger agrandissement au survol */
+}
+
+.timeslot-btn.selected {
+    background-color: #28a745; /* Vert pour les créneaux sélectionnés */
+    color: white;
+}
+
+.timeslot-cell.disabled {
+    cursor: not-allowed;
+    background-color: #343a40 !important; /* Gris foncé */
+    color: #a8a8a8 !important; /* Gris clair */
+    border-radius: 10px; /* Garde les bords arrondis pour les cellules désactivées */
+}
+
+.table-timeslots th {
+    text-align: center;
+    background-color: #343a40;
+    color: white;
+    padding: 10px;
+    border-radius: 10px 10px 0 0; /* Bords arrondis en haut */
+}
+
+.table-timeslots td {
+    text-align: center;
+    padding: 10px;
+    vertical-align: top;
+    border-radius: 0 0 10px 10px; /* Bords arrondis en bas */
+}
+
+.table-timeslots .bg-dark {
+    cursor: not-allowed;
+    border-radius: 10px;
+}
+
+.table-timeslots .bg-secondary {
+    cursor: not-allowed;
+    border-radius: 10px;
+}
+
+.form-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+{% endblock %}
