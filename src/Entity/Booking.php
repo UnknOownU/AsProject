@@ -83,4 +83,8 @@ class Booking
 
         return $this;
     }
+    public function getUuid(): ?Uuid
+    {
+        return $this->uuid;
+    }
 }

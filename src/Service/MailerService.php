@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\TechnicalControlAppointment; // Import de la classe nécessaire
+use App\Entity\Booking;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
@@ -18,14 +18,14 @@ class MailerService
         $this->twig = $twig;
     }
 
-    public function sendAppointmentConfirmation($to, TechnicalControlAppointment $appointment)
+    public function sendAppointmentConfirmation(string $to, Booking $booking)
     {
         $email = (new Email())
             ->from('no-reply@yourdomain.com')
             ->to($to)
             ->subject('Confirmation de votre rendez-vous')
             ->html($this->twig->render('emails/appointment_confirmation.html.twig', [
-                'appointment' => $appointment
+                'booking' => $booking
             ]));
 
         $this->mailer->send($email);
