@@ -6,6 +6,7 @@ use App\Entity\Booking;
 use App\Entity\Timeslot;
 use App\Form\BookingType;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,8 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 use DateTime;
 use DateInterval;
 use DatePeriod;
@@ -22,6 +25,15 @@ use DatePeriod;
 
 class BookingController extends AbstractController
 {
+
+    private $mailerService;
+
+    // Injecting the MailerService into the constructor
+    public function __construct(MailerService $mailerService)
+    {
+        $this->mailerService = $mailerService;
+    }
+    
     #[Route('/booking', name: 'app_booking')]
     public function index(): Response
     {
@@ -30,8 +42,24 @@ class BookingController extends AbstractController
         ]);
     }
 
+    #[Route('/booking/success', name: 'app_booking_success')]
+    public function success(SessionInterface $session): Response
+    {
+        // Vérifiez si l'utilisateur vient de créer un rendez-vous
+        if (!$session->get('booking_success')) {
+            // Si la variable de session n'existe pas, rediriger vers l'accueil
+            return $this->redirectToRoute('home');
+        }
+    
+        // Supprimer la variable de session pour éviter un accès ultérieur non autorisé
+        $session->remove('booking_success');
+    
+        return $this->render('booking/success.html.twig');
+    }
+    
+
     #[Route('/booking/new', name: 'app_booking_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, SessionInterface $session, MailerService $mailerService): Response
     {
         $booking = new Booking();
         $booking->setStatus('Créé');
@@ -109,7 +137,10 @@ class BookingController extends AbstractController
                 $booking->setTimeslot($selectedTimeslot);
                 $entityManager->persist($booking);
                 $entityManager->flush();
-    
+                $session->set('booking_success', true);
+                $this->mailerService->sendAppointmentConfirmation(
+                    $booking->getInspectionForm()->getEmail(),
+                    $booking);
                 $this->addFlash('success', 'Votre rendez-vous a été créé avec succès !');
                 return $this->redirectToRoute('app_booking_success');
             } else {

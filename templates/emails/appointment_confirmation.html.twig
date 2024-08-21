@@ -71,33 +71,30 @@
 <body>
     <div class="container">
         <h1>Confirmation de votre rendez-vous</h1>
-        <p>Bonjour <span class="highlight">{{ appointment.firstname }} {{ appointment.lastname }}</span>,</p>
+        <p>Bonjour <span class="highlight">{{ booking.inspectionForm.firstname }} {{ booking.inspectionForm.lastname }}</span>,</p>
 
         <p>Nous confirmons votre rendez-vous pour le contrôle technique de votre véhicule. Voici les détails de votre rendez-vous :</p>
 
         <ul>
-            <li>Nom complet : {{ appointment.firstname }} {{ appointment.lastname }}</li>
-            <li>Email : {{ appointment.email }}</li>
-            <li>Numéro de téléphone : {{ appointment.phone }}</li>
-            <li>Marque du véhicule : {{ appointment.carBrand }}</li>
-            <li>Modèle du véhicule : {{ appointment.carModel }}</li>
-            <li>Immatriculation : {{ appointment.licensePlate }}</li>
-            <li>Type de carburant : {{ appointment.fuelType }}</li>
-            <li>Type de véhicule : {{ appointment.carType }}</li>
-            <li>Type de contrôle technique : {{ appointment.controlType }}</li>
-            {% if appointment.comments %}
-                <li>Commentaires : {{ appointment.comments }}</li>
-            {% endif %}
-            <li class="highlight">Identifiant de réservation : {{ appointment.uuid }}</li>
+            <li>Nom complet : {{ booking.inspectionForm.firstname }} {{ booking.inspectionForm.lastname }}</li>
+            <li>Email : {{ booking.inspectionForm.email }}</li>
+            <li>Numéro de téléphone : {{ booking.inspectionForm.phone }}</li>
+            <li>Marque du véhicule : {{ booking.inspectionForm.carBrand }}</li>
+            <li>Modèle du véhicule : {{ booking.inspectionForm.carModel }}</li>
+            <li>Immatriculation : {{ booking.inspectionForm.licensePlate }}</li>
+            <li>Type de carburant : {{ booking.inspectionForm.fuelType }}</li>
+            <li>Type de véhicule : {{ booking.inspectionForm.carType }}</li>
+            <li>Type de contrôle technique : {{ booking.inspectionForm.controlType }}</li>
+            <li class="highlight">Identifiant de réservation : {{ booking.uuid }}</li>
         </ul>
 
         <p class="warning">Conservez cet identifiant de réservation pour modifier ou annuler votre rendez-vous dans un délai de 24 heures. Cliquez sur les liens ci-dessous pour effectuer ces actions :</p>
 
         <p>
-            <a href="{{ url('home', { 'uuid': appointment.uuid, 'step': 1 }) }}" class="btn btn-primary">Modifier mon rendez-vous</a>
+            <a href="{{ url('home', { 'uuid': booking.uuid, 'step': 1 }) }}" class="btn btn-primary">Modifier mon rendez-vous</a>
         </p>
 
-        <a href="{{ url('home', { 'uuid': appointment.uuid }) }}" 
+        <a href="{{ url('home', { 'uuid': booking.uuid }) }}" 
            class="btn btn-danger">
             Annuler mon rendez-vous
         </a>
@@ -110,7 +107,7 @@
 
         <div class="footer">
             <p>Pour toute question, contactez-nous à <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.</p>
-            <p>Centre de contrôle technique, 123 Rue Exemple, Ville, Pays</p>
+            <p>Centre de contrôle technique, 156 Rue de Cartigny Roubaix</p>
         </div>
     </div>
 </body>
