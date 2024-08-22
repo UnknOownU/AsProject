@@ -68,7 +68,7 @@ class BookingController extends AbstractController
         $allTimeslots = $entityManager->getRepository(Timeslot::class)->findBy([], ['startTime' => 'ASC']);
     
         $now = new \DateTime(); // Date et heure actuelles
-    
+        
         // Filtrer les créneaux horaires pour exclure ceux dans moins de 12 heures
         $filteredTimeslots = array_filter($allTimeslots, function($timeslot) use ($now) {
             return ($timeslot->getStartTime()->getTimestamp() - $now->getTimestamp()) >= 43200; // 43200 secondes = 12 heures
@@ -77,6 +77,8 @@ class BookingController extends AbstractController
         $timeslotsByDay = [];
         $hours = [];
         $days = [];
+    
+        $formatter = new \IntlDateFormatter('fr_FR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE, 'Europe/Paris', \IntlDateFormatter::GREGORIAN, 'EEEE d MMMM');
     
         foreach ($filteredTimeslots as $timeslot) {
             $day = $timeslot->getStartTime()->format('Y-m-d'); // Format uniforme pour les clés
@@ -106,7 +108,7 @@ class BookingController extends AbstractController
             $dayDate = clone $startDate; // Clone pour ne pas modifier l'original
             $days[] = [
                 'date' => $dayDate->format('Y-m-d'), // Utilisation du même format que les clés
-                'display' => $dayDate->format('l d F') // Format pour affichage
+                'display' => $formatter->format($dayDate) // Format pour affichage en français
             ];
             $startDate->modify('+1 day');
         }
@@ -156,7 +158,7 @@ class BookingController extends AbstractController
             'csrf_token' => $csrfToken,
         ]);
     }
-
+    
     #[Route('/booking/edit/{uuid}', name: 'app_booking_edit')]
     public function edit(Request $request, string $uuid, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, SessionInterface $session, MailerService $mailerService): Response
     {
@@ -183,6 +185,8 @@ class BookingController extends AbstractController
         $timeslotsByDay = [];
         $hours = [];
         $days = [];
+    
+        $formatter = new \IntlDateFormatter('fr_FR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE, 'Europe/Paris', \IntlDateFormatter::GREGORIAN, 'EEEE d MMMM');
     
         foreach ($filteredTimeslots as $timeslot) {
             $day = $timeslot->getStartTime()->format('Y-m-d'); // Format uniforme pour les clés
@@ -212,7 +216,7 @@ class BookingController extends AbstractController
             $dayDate = clone $startDate; // Clone pour ne pas modifier l'original
             $days[] = [
                 'date' => $dayDate->format('Y-m-d'), // Utilisation du même format que les clés
-                'display' => $dayDate->format('l d F') // Format pour affichage
+                'display' => $formatter->format($dayDate) // Format pour affichage en français
             ];
             $startDate->modify('+1 day');
         }
@@ -273,7 +277,5 @@ class BookingController extends AbstractController
             'booking' => $booking,
         ]);
     }
-     
     
-       
 }

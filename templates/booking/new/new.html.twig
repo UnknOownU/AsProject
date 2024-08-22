@@ -87,68 +87,74 @@
     </div>
 
     <!-- Étape 3: Sélectionner un créneau horaire -->
-    <div id="step3" class="step" style="display: none;">
-        <h1 class="text-center mb-4 text-warning">Sélectionnez un créneau horaire</h1>
-    
-        <div class="card bg-dark text-light p-4 rounded">
-            <div class="table-responsive">
-                <table class="table table-bordered table-dark table-hover text-warning">
-                    <thead>
+<div id="step3" class="step" style="display: none;">
+    <h1 class="text-center mb-4 text-warning">Sélectionnez un créneau horaire</h1>
+
+    <div class="card bg-dark text-light p-4 rounded">
+        <div class="table-responsive">
+            <table class="table table-bordered table-dark table-hover text-warning">
+                <thead>
+                    <tr>
+                        <th scope="col">Heures</th>
+                        {% for day in days %}
+                            <th class="text-center">{{ day.display }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hour in hours %}
                         <tr>
-                            <th scope="col">Heures</th>
+                            <td class="fw-bold">{{ hour|date("H:i", "Europe/Paris", "fr_FR") }}</td>
                             {% for day in days %}
-                                <th class="text-center">{{ day.display }}</th>
+                                {% set dayDate = day.date %}
+                                {% set slotData = timeslotsByDay[dayDate][hour] | default(null) %}
+                                {% if slotData is not null %}
+                                    {% set slot = slotData.slot %}
+                                   <td class="text-center timeslot-cell
+                                        {% if slot %}
+                                            {% if slot.isAvailable %}
+                                                bg-dark text-warning
+                                            {% else %}
+                                                bg-secondary text-light disabled
+                                            {% endif %}
+                                        {% else %}
+                                            bg-dark text-white disabled
+                                        {% endif %}"
+                                        data-slot-id="{{ slot.id ?? '0' }}" 
+                                        data-slot-hour="{{ hour }}" 
+                                        data-slot-day="{{ day.display }}">
+                                        {% if slot %}
+                                            {% if slot.isAvailable %}
+                                                <button type="button" class="btn btn-sm btn-warning timeslot-btn" 
+                                                        data-slot-id="{{ slot.id }}" 
+                                                        data-slot-day="{{ day.display }}"
+                                                        data-slot-time="{{ slot.startTime|date('H:i', 'Europe/Paris', 'fr_FR') }} - {{ slot.endTime|date('H:i', 'Europe/Paris', 'fr_FR') }}">
+                                                    {{ slot.startTime|date('H:i', 'Europe/Paris', 'fr_FR') }} - {{ slot.endTime|date('H:i', 'Europe/Paris', 'fr_FR') }}
+                                                </button>
+                                            {% else %}
+                                                <span class="text-danger"><del>{{ slot.startTime|date('H:i', 'Europe/Paris', 'fr_FR') }} - {{ slot.endTime|date('H:i', 'Europe/Paris', 'fr_FR') }} (Réservé)</del></span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-white">Indisponible</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                {% else %}
+                                    <td class="text-center bg-dark text-white disabled">Indisponible</td>
+                                {% endif %}
                             {% endfor %}
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for hour in hours %}
-                            <tr>
-                                <td class="fw-bold">{{ hour }}</td>
-                                {% for day in days %}
-                                    {% set dayDate = day.date %}
-                                    {% set slotData = timeslotsByDay[dayDate][hour] | default(null) %}
-                                    {% if slotData is not null %}
-                                        {% set slot = slotData.slot %}
-                                        <td class="text-center timeslot-cell
-                                            {% if slot %}
-                                                {% if slot.isAvailable %}
-                                                    bg-dark text-warning
-                                                {% else %}
-                                                    bg-secondary text-light disabled
-                                                {% endif %}
-                                            {% else %}
-                                                bg-dark text-white disabled
-                                            {% endif %}"
-                                            data-slot-id="{{ slot.id ?? '0' }}" data-slot-hour="{{ hour }}" data-slot-day="{{ dayDate }}">
-                                            {% if slot %}
-                                                {% if slot.isAvailable %}
-                                                    <button type="button" class="btn btn-sm btn-warning timeslot-btn" data-slot-id="{{ slot.id }}">
-                                                        {{ slot.startTime.format('H:i') ~ ' - ' ~ slot.endTime.format('H:i') }}
-                                                    </button>
-                                                {% else %}
-                                                    <span class="text-danger"><del>{{ slot.startTime.format('H:i') }} - {{ slot.endTime.format('H:i') }} (Réservé)</del></span>
-                                                {% endif %}
-                                            {% else %}
-                                                <span class="text-white">Indisponible</span>
-                                            {% endif %}
-                                        </td>
-                                    {% else %}
-                                        <td class="text-center bg-dark text-white disabled">Indisponible</td>
-                                    {% endif %}
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <input type="hidden" id="selectedSlotId" name="selectedSlotId" value="">
-            <div class="text-center mt-4">
-                <button type="button" class="btn btn-secondary btn-lg" onclick="previousStep(2)">Précédent</button>
-                <button type="button" class="btn btn-warning btn-lg" id="step3NextButton">Suivant</button>
-            </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <input type="hidden" id="selectedSlotId" name="selectedSlotId" value="">
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-secondary btn-lg" onclick="previousStep(2)">Précédent</button>
+            <button type="button" class="btn btn-warning btn-lg" id="step3NextButton">Suivant</button>
         </div>
     </div>
+</div>
 
     <!-- Étape 4: Confirmation -->
     <div id="step4" class="step" style="display: none;">
@@ -264,6 +270,57 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function handleEnterKey(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Empêche la soumission du formulaire
+            switch (currentStep) {
+                case 1:
+                    if (validateStep1()) {
+                        nextStep(2);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Champs manquants',
+                            text: 'Veuillez remplir tous les champs avant de passer à l\'étape suivante.',
+                        });
+                    }
+                    break;
+                case 2:
+                    if (validateStep2()) {
+                        nextStep(3);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Champs manquants ou invalides',
+                            text: 'Veuillez remplir tous les champs et vérifier les erreurs avant de passer à l\'étape suivante.',
+                        });
+                    }
+                    break;
+                case 3:
+                    if (saveStep3()) {
+                        // Afficher le récapitulatif
+                        const selectedBtn = document.querySelector('.timeslot-btn.selected');
+                        const selectedDay = selectedBtn.getAttribute('data-slot-day');
+                        const selectedTime = selectedBtn.getAttribute('data-slot-time');
+
+                        document.getElementById('recapCarType').textContent = document.getElementById('booking_inspectionForm_carType').value;
+                        document.getElementById('recapFuelType').textContent = document.getElementById('booking_inspectionForm_fuelType').value;
+                        document.getElementById('recapControlType').textContent = document.getElementById('booking_inspectionForm_controlType').value;
+                        document.getElementById('recapLastname').textContent = document.getElementById('booking_inspectionForm_lastname').value;
+                        document.getElementById('recapFirstname').textContent = document.getElementById('booking_inspectionForm_firstname').value;
+                        document.getElementById('recapEmail').textContent = document.getElementById('booking_inspectionForm_email').value;
+                        document.getElementById('recapPhone').textContent = document.getElementById('booking_inspectionForm_phone').value;
+                        document.getElementById('recapCarBrand').textContent = document.getElementById('booking_inspectionForm_carBrand').value;
+                        document.getElementById('recapCarModel').textContent = document.getElementById('booking_inspectionForm_carModel').value;
+                        document.getElementById('recapLicensePlate').textContent = document.getElementById('booking_inspectionForm_licensePlate').value;
+                        document.getElementById('recapTimeslot').textContent = `${selectedDay} - ${selectedTime}`;
+                        nextStep(4);
+                    }
+                    break;
+            }
+        }
+    }
+
     document.getElementById('step1NextButton').addEventListener('click', function () {
         if (validateStep1()) {
             nextStep(2);
@@ -291,6 +348,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('step3NextButton').addEventListener('click', function () {
         if (saveStep3()) {
             // Afficher le récapitulatif
+            const selectedBtn = document.querySelector('.timeslot-btn.selected');
+            const selectedDay = selectedBtn.getAttribute('data-slot-day');
+            const selectedTime = selectedBtn.getAttribute('data-slot-time');
+
             document.getElementById('recapCarType').textContent = document.getElementById('booking_inspectionForm_carType').value;
             document.getElementById('recapFuelType').textContent = document.getElementById('booking_inspectionForm_fuelType').value;
             document.getElementById('recapControlType').textContent = document.getElementById('booking_inspectionForm_controlType').value;
@@ -301,8 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('recapCarBrand').textContent = document.getElementById('booking_inspectionForm_carBrand').value;
             document.getElementById('recapCarModel').textContent = document.getElementById('booking_inspectionForm_carModel').value;
             document.getElementById('recapLicensePlate').textContent = document.getElementById('booking_inspectionForm_licensePlate').value;
-            document.getElementById('recapTimeslot').textContent = document.querySelector('.timeslot-btn.selected').textContent.trim();
-
+            document.getElementById('recapTimeslot').textContent = `${selectedDay} - ${selectedTime}`;
             nextStep(4);
         }
     });
@@ -317,9 +377,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    document.querySelector('.btn-warning[type="submit"]').addEventListener('click', function () {
-        // Nettoyer le localStorage après confirmation, bien que non utilisé dans cette version
-        // localStorage.clear();  // Vous pouvez commenter ou supprimer cette ligne
+    // Ajoutez ici l'anti double soumission
+    document.querySelector('.btn-warning[type="submit"]').addEventListener('click', function (event) {
+        const submitButton = event.target;
+        submitButton.disabled = true;
+        submitButton.innerText = 'Traitement en cours...'; // Changez le texte du bouton si souhaité
+        submitButton.form.submit(); // Soumet le formulaire
     });
 
     window.nextStep = function (step) {
@@ -332,11 +395,16 @@ document.addEventListener('DOMContentLoaded', function () {
         showStep(step);
     };
 
+    // Capturer l'événement de la touche "Entrée" pour chaque étape
+    document.getElementById('appointmentForm').addEventListener('keydown', handleEnterKey);
+
     // Afficher la première étape initialement
     showStep(1);
 });
-
 </script>
+
+
+
 
 <style>
 .timeslot-cell {
