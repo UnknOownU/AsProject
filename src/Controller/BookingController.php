@@ -277,5 +277,38 @@ class BookingController extends AbstractController
             'booking' => $booking,
         ]);
     }
+
+
+    #[Route('/booking/cancel/{uuid}', name: 'app_booking_cancel')]
+    public function cancel(string $uuid, EntityManagerInterface $entityManager, SessionInterface $session, MailerService $mailerService): Response
+    {
+        // Retrieve the booking by UUID
+        $booking = $entityManager->getRepository(Booking::class)->findOneBy(['uuid' => $uuid]);
+    
+        if (!$booking) {
+            throw $this->createNotFoundException('Aucun rendez-vous trouvé pour cet identifiant.');
+        }
+    
+        // Retrieve the associated timeslot
+        $timeslot = $booking->getTimeslot();
+    
+        // Mark the booking as cancelled
+        $booking->setStatus('Annulé');
+    
+        // Release the associated timeslot
+        if ($timeslot) {
+            $timeslot->setIsAvailable(true);
+        }
+    
+        // Persist the changes
+        $entityManager->persist($booking);
+        $entityManager->flush();
+    
+    
+    
+        $session->set('booking_cancel_success', true);
+    
+        return $this->redirectToRoute('app_booking_success');
+    }
     
 }

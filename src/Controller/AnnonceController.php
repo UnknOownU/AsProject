@@ -85,7 +85,7 @@ class AnnonceController extends AbstractController
         ]);
     }
     
-
+//test gpg
     private function getPagesToShow(int $currentPage, int $totalPages): array
     {
         $pagesToShow = [];
