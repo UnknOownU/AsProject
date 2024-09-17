@@ -278,7 +278,7 @@ class BookingController extends AbstractController
         ]);
     }
 
-
+//tets
     #[Route('/booking/cancel/{uuid}', name: 'app_booking_cancel')]
     public function cancel(string $uuid, EntityManagerInterface $entityManager, SessionInterface $session, MailerService $mailerService): Response
     {
