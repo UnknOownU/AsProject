@@ -277,7 +277,7 @@ class BookingController extends AbstractController
             'booking' => $booking,
         ]);
     }
-//test
+//test verif
 
     #[Route('/booking/cancel/{uuid}', name: 'app_booking_cancel')]
     public function cancel(string $uuid, EntityManagerInterface $entityManager, SessionInterface $session, MailerService $mailerService): Response
