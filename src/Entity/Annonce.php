@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Image;
-use App\Entity\Option;
+use App\Entity\CarOptions;
 use App\Repository\AnnonceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -81,13 +81,13 @@ class Annonce
     #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Image::class, cascade: ['persist', 'remove'])]
     private Collection $images;
 
-    #[ORM\ManyToMany(targetEntity: Option::class, mappedBy: 'annonces')]
-    private Collection $options;
+    #[ORM\ManyToMany(targetEntity: CarOptions::class, mappedBy: 'annonces')]
+    private Collection $carOptions;
 
     public function __construct()
     {
         $this->images = new ArrayCollection();
-        $this->options = new ArrayCollection();
+        $this->carOptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -366,27 +366,27 @@ class Annonce
     }
 
     /**
-     * @return Collection<int, Option>
+     * @return Collection<int, CarOptions>
      */
-    public function getOptions(): Collection
+    public function getCarOptions(): Collection
     {
-        return $this->options;
+        return $this->carOptions;
     }
 
-    public function addOption(Option $option): static
+    public function addCarOption(CarOptions $carOption): static
     {
-        if (!$this->options->contains($option)) {
-            $this->options->add($option);
-            $option->addAnnonce($this);
+        if (!$this->carOptions->contains($carOption)) {
+            $this->carOptions->add($carOption);
+            $carOption->addAnnonce($this);
         }
 
         return $this;
     }
 
-    public function removeOption(Option $option): static
+    public function removeCarOption(CarOptions $carOption): static
     {
-        if ($this->options->removeElement($option)) {
-            $option->removeAnnonce($this);
+        if ($this->carOptions->removeElement($carOption)) {
+            $carOption->removeAnnonce($this);
         }
 
         return $this;

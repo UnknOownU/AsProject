@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Option;
+use App\Entity\CarOptions;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
