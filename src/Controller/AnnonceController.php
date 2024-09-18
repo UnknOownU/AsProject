@@ -76,16 +76,16 @@ class AnnonceController extends AbstractController
             }
         }
     
-        $options = $annonce->getOptions(); // Récupérer les options associées à l'annonce
+        // Utilise la méthode correcte pour récupérer les options associées
+        $carOptions = $annonce->getCarOptions(); // Remplace getOptions par getCarOptions
     
         return $this->render('annonce/show.html.twig', [
             'annonce' => $annonce,
             'images' => $images,
-            'options' => $options, // Passer les options à la vue
+            'options' => $carOptions, // Passer les options à la vue
         ]);
     }
     
-//test gpg
     private function getPagesToShow(int $currentPage, int $totalPages): array
     {
         $pagesToShow = [];

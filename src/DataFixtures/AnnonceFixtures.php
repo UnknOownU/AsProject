@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Annonce;
 use App\Entity\Image;
-use App\Entity\Option;
+use App\Entity\CarOptions;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -29,12 +29,13 @@ class AnnonceFixtures extends Fixture
             'Système de navigation'
         ];
 
-        $options = [];
+        // Création des options de voiture (CarOptions)
+        $carOptions = [];
         foreach ($optionNames as $optionName) {
-            $option = new Option();
+            $option = new CarOptions();
             $option->setName($optionName);
             $manager->persist($option);
-            $options[] = $option;
+            $carOptions[] = $option;
         }
 
         $manager->flush();
@@ -108,9 +109,9 @@ class AnnonceFixtures extends Fixture
                     ->setPrice($price);
 
             // Ajouter des options aléatoires à l'annonce
-            $selectedOptions = (array)array_rand($options, rand(1, 4));
+            $selectedOptions = (array)array_rand($carOptions, rand(1, 4));
             foreach ($selectedOptions as $optionIndex) {
-                $annonce->addOption($options[$optionIndex]);
+                $annonce->addCarOption($carOptions[$optionIndex]); // Utiliser addCarOption pour CarOptions
             }
 
             // Générer plusieurs images pour chaque annonce

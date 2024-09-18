@@ -4,10 +4,11 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\OptionRepository;
+use App\Repository\CarOptionsRepository;
+use App\Entity\CarOptions;
 
-#[ORM\Entity(repositoryClass: OptionRepository::class)]
-class Option
+#[ORM\Entity(repositoryClass: CarOptionsRepository::class)]
+class CarOptions
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,7 +18,7 @@ class Option
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: Annonce::class, inversedBy: 'options')]
+    #[ORM\ManyToMany(targetEntity: Annonce::class, inversedBy: 'carOptions')]
     private Collection $annonces;
 
     public function __construct()

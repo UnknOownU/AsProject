@@ -19,7 +19,7 @@ class BookingType extends AbstractType
         $this->csrfTokenManager = $csrfTokenManager;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $builder, array $carOptions): void
     {
         $builder
             ->add('inspectionForm', InspectionFormType::class, [
